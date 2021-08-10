@@ -1,2 +1,4 @@
-# algorithm_exercise
+# 算法练习 #
+个人练习用  
+想看看的自便
  
