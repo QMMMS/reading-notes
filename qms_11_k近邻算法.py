@@ -25,20 +25,25 @@ def create_new_fruit():
     return new_fruit_info
 
 
-def compare_fruit(new_fruit_info, target_fruit_info):
+def compare_fruit(new_fruit_info, target_fruit_info, k):
     final_fruit_info = []
-    compare = float("inf")
-    for fruit, info in target_fruit_info.items():
-        rank = 0
-        for n in range(5):
-            new_rank = (new_fruit_info[n] - info[n]) ** 2
-            rank += new_rank
-        if rank < compare:
-            final_fruit_info.clear()
-            final_fruit_info.append(fruit)
-            compare = rank
-        elif rank == compare:
-            final_fruit_info.append(fruit)
+    for i in range(k):
+        tem_fruit_info = []
+        compare = float("inf")
+        for fruit, info in target_fruit_info.items():
+            rank = 0
+            for n in range(5):
+                new_rank = (new_fruit_info[n] - info[n]) ** 2
+                rank += new_rank
+            if rank < compare:
+                tem_fruit_info.clear()
+                tem_fruit_info.append(fruit)
+                compare = rank
+            elif rank == compare:
+                tem_fruit_info.append(fruit)
+        final_fruit_info.extend(tem_fruit_info)
+        for fruit in tem_fruit_info:
+            target_fruit_info.pop(fruit)
     return final_fruit_info
 
 
@@ -61,7 +66,7 @@ def give_answer(final_fruit_info):
 if __name__ == '__main__':
     fruit_info = create_fruit_info()
     new_fruit = create_new_fruit()
-    final_fruit = compare_fruit(new_fruit, fruit_info)
+    final_fruit = compare_fruit(new_fruit, fruit_info, 4)
     print("这有一个果子，大小为%i，香味为%i，颜色为%i，软硬度为%i，价格为%i"
           % (new_fruit[0], new_fruit[1], new_fruit[2], new_fruit[3], new_fruit[4]))
     give_answer(final_fruit)
