@@ -7,7 +7,7 @@ def create_words():
     list_of_words = []
     number_of_word = randint(5000, 5880)
     for i in range(number_of_word):
-        length_of_word = randint(1, 8)
+        length_of_word = randint(1, 15)
         word = ""
         for n in range(length_of_word):
             number_of_character = randint(97, 122)
@@ -19,6 +19,8 @@ def create_words():
 
 def deal_word(word):
     # 处理单词
+    global final_list
+    global to_deal_list
     final_list.append(word)
     to_deal_list.remove(word)
 
@@ -49,6 +51,17 @@ def find_word(word_list):
     return ready_to_deal_list[0]
 
 
+def solve_word(word_list):
+    # 和find_word有相同的效果，超级简单
+    if len(word_list) == 1:
+        return word_list[0]
+    compare = word_list[0]
+    for word in word_list[1:]:
+        if word < compare:
+            compare = word
+    return compare
+
+
 if __name__ == '__main__':
     raw_to_deal_list = create_words()
     to_deal_list = list(set(raw_to_deal_list))  # 去掉相同的单词（不去掉也能运行）
@@ -56,5 +69,6 @@ if __name__ == '__main__':
 
     final_list = []
     while to_deal_list:
-        deal_word(find_word(to_deal_list))
+        # deal_word(find_word(to_deal_list))
+        deal_word(solve_word(to_deal_list))
     print("排序后：" + str(final_list))
