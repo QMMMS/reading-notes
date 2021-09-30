@@ -15,6 +15,68 @@ int score = 0;
 int gamespeed = 300;//游戏速度
 int win = 16;//胜利分数
 
+
+
+int change_model(char qi[22][22], int zb[2][20], char dir) {
+	int x = 0, y = 0;
+	if (dir == 72) {
+		//up
+		x = zb[0][head] - 1;
+		y = zb[1][head];
+	}
+	else if (dir == 80) {
+		//down
+		x = zb[0][head] + 1;
+		y = zb[1][head];
+	}
+	else if (dir == 75) {
+		//left
+		x = zb[0][head];
+		y = zb[1][head] - 1;
+	}
+	else if (dir == 77) {
+		x = zb[0][head];
+		y = zb[1][head] + 1;
+	}
+	//检测碰撞///////////////////////////////////////
+
+	if (qi[x][y] == 'o') {
+		give_food(qi);
+		if (tail == 0) {
+			tail = 19;
+		}
+		else { tail = (tail - 1) % 20; }
+		score++;
+	}
+
+	if (qi[x][y] == '-' || qi[x][y] == '*' || qi[x][y] == '|') return 0;
+
+	/////////////////////////////////////////
+	qi[zb[0][tail]][zb[1][tail]] = ' ';
+	tail = (tail + 1) % 20;
+	qi[zb[0][head]][zb[1][head]] = '*';
+	head = (head + 1) % 20;
+	zb[0][head] = x;
+	zb[1][head] = y;
+	qi[zb[0][head]][zb[1][head]] = '#';
+	return 1;
+
+}
+
+int give_food(char qi[22][22]) {
+	srand(time(0));
+	int x = rand() % 20 + 1;
+	int y = rand() % 20 + 1;
+	if (qi[x][y] = ' ') {
+		qi[x][y] = 'o';
+	}
+	else {
+		give_food(qi);
+	}
+	return 0;
+}
+
+
 int main() {
 	//初始化//////////////////////////////////////
 	
@@ -93,66 +155,6 @@ int main() {
 
 
 	system("pause");
-	return 0;
-}
-
-
-int change_model(char qi[22][22], int zb[2][20], char dir) {
-	int x=0, y=0;
-	if (dir == 72) {
-		//up
-		x = zb[0][head] - 1;
-		y = zb[1][head];
-	}
-	else if (dir == 80) {
-		//down
-		x = zb[0][head] + 1;
-		y = zb[1][head];
-	}
-	else if (dir == 75) {
-		//left
-		x = zb[0][head];
-		y = zb[1][head] - 1;
-	}
-	else if (dir == 77) {
-		x = zb[0][head];
-		y = zb[1][head] + 1;
-	}
-	//检测碰撞///////////////////////////////////////
-
-	if (qi[x][y] == 'o') {
-		give_food(qi);
-		if (tail == 0) {
-			tail = 19;
-		}
-		else { tail = (tail - 1) % 20; }
-		score++;
-	}
-
-	if (qi[x][y] == '-'|| qi[x][y] == '*'||qi[x][y] == '|') return 0;
-
-	/////////////////////////////////////////
-	qi[zb[0][tail]][zb[1][tail]] = ' ';
-	tail = (tail + 1) % 20;
-	qi[zb[0][head]][zb[1][head]] = '*';
-	head = (head + 1) % 20;
-	zb[0][head] = x;
-	zb[1][head] = y;
-	qi[zb[0][head]][zb[1][head]] = '#';
-	return 1;
-
-}
-
-int give_food(char qi[22][22]) {
-	srand(time(0));
-	int x = rand() % 20 + 1;
-	int y = rand() % 20 + 1;
-	if (qi[x][y] = ' ') {
-		qi[x][y] = 'o';
-	}
-	else {
-		give_food(qi);
-	}
 	return 0;
 }
 
