@@ -181,15 +181,15 @@ $$
 
 ![](./img/ops1.png)
 
-![](./img/Beale&amp;#039;s function - Imgur.gif)
+![](./img/Beale.gif)
 
 ![](./img/giphy.gif)
 
-![](./img/Long Valley - Imgur.gif)
+![Long Valley - Imgur](./img/Long_Valley.gif)
 
 
 
-![](./img/Saddle Point - Imgur.gif)
+![Saddle Point - Imgur](./img/Saddle_Point.gif)
 
 > 更多动画例子可以看：https://juntang-zhuang.github.io/adabelief/
 
