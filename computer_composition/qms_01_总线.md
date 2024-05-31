@@ -2,7 +2,7 @@
 
 > 参考：https://blog.csdn.net/SX123q/article/details/124597525
 
-![系统总线 (1)](https://img-blog.csdnimg.cn/img_convert/8581cbacb7ccdc104c91c39b31f71f48.png)
+![系统总线 (1)](./img/8581cbacb7ccdc104c91c39b31f71f48.png)
 
 ## 总线判优控制
 
@@ -14,7 +14,7 @@
 
 ### 链式查询
 
-![链式查询](https://img-blog.csdnimg.cn/img_convert/9a0af13b3573de0f32eb1d60f0c54e7d.png)
+![链式查询](./img/9a0af13b3573de0f32eb1d60f0c54e7d.png)
 
 > 链式查询的特点
 
@@ -31,7 +31,7 @@
 
 > 工作图
 
-![计数器定时查询](https://img-blog.csdnimg.cn/img_convert/3a38caee080a9370222e06415de4c342.png)
+![计数器定时查询](./img/3a38caee080a9370222e06415de4c342.png)
 
 > 计数器定时查询特点
 
@@ -45,7 +45,7 @@
 
 > 工作图
 
-![独立请求方式](https://img-blog.csdnimg.cn/img_convert/ba41d2e13febdf55c5e46e855d2226aa.png)
+![独立请求方式](./img/ba41d2e13febdf55c5e46e855d2226aa.png)
 
 > 特点
 
@@ -75,15 +75,15 @@
 
 > 工作图
 
-![同步通信工作图](https://img-blog.csdnimg.cn/img_convert/9c6c8187a29544714b00fc690f969e05.png)
+![同步通信工作图](./img/9c6c8187a29544714b00fc690f969e05.png)
 
 > 读命令时序图
 
-![同步通信读命令时序图](https://img-blog.csdnimg.cn/img_convert/461b2c02416014200ec2609840d93f00.png)
+![同步通信读命令时序图](./img/461b2c02416014200ec2609840d93f00.png)
 
 > 写命令时序图
 
-![同步通信写命令时序图](https://img-blog.csdnimg.cn/img_convert/4512530382260be4de9d1d4841f703d6.png)
+![同步通信写命令时序图](./img/4512530382260be4de9d1d4841f703d6.png)
 
 > 特点
 
@@ -98,7 +98,7 @@
 > 按照应答方式可以将异步通信分为不互锁、半互锁、全互锁三种类型
 >
 
-![异步通信三种类型](https://img-blog.csdnimg.cn/img_convert/b0933662f0e51b7c3fe4d3f013062e7d.png)
+![异步通信三种类型](./img/b0933662f0e51b7c3fe4d3f013062e7d.png)
 
 - 不互锁方式
   1. 主模块发出请求信号后，不等待从模块的应答信号，一段时间后自动撤销信号
@@ -122,11 +122,11 @@
 
 > 工作图
 
-![半同步通信工作流程](https://img-blog.csdnimg.cn/img_convert/da677281076f8678b97fee54fb363b6c.png)
+![半同步通信工作流程](./img/da677281076f8678b97fee54fb363b6c.png)
 
 > 读命令时序图
 
-![半同步通信读命令时序图](https://img-blog.csdnimg.cn/img_convert/edddc455185e8f370169e8046bda8427.png)
+![半同步通信读命令时序图](./img/edddc455185e8f370169e8046bda8427.png)
 
 > 特点
 
@@ -156,7 +156,7 @@
 
 > 工作原理
 
-![分离式通信工作原理](https://gitee.com/yezio/images/raw/master/img/202110261300350.jpg)
+![分离式通信工作原理](./img/202110261300350.jpg)
 
 注意：A模块一旦发送完信息立即放弃总线使用权。
 
