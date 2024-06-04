@@ -1,4 +1,4 @@
-# 浅层神经网络(Shallow neural networks)
+# 浅层神经网络
 
 ## 神经网络结构
 

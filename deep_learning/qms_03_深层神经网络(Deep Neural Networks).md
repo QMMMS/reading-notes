@@ -1,4 +1,4 @@
-# 深层神经网络(Deep Neural Networks)
+# 深层神经网络
 
 ## 符号补充
 

@@ -1,4 +1,4 @@
-# 逻辑回归(logistic regression)
+# 逻辑回归
 
 ## 介绍
 
