@@ -1,5 +1,7 @@
 # 概率与统计基础
 
+> 参考：[概率论与数理统计笔记](https://github.com/ChanceQZ/Statistics-note/tree/master)
+
 ## 基础概念
 
 **独立**：设$A$，$B$是随机试验中的两个事件，若满足$$P(AB)=P(A)P(B)$$，则称事件$A$和$B$相互独立。
@@ -62,31 +64,13 @@ $$
 
 ### 常见分布
 
-$$
-\begin{matrix} \hline
-  分布名称&概率分布或密度函数&数学期望&方差&特征函数 \\\hline
-  退化分布I_c(x)&p_c=1(c为常数)&c&0&{\rm{e}}^{{\rm{i}}t} \\\hline
-  伯努利分布(两点分布)&\begin{matrix}\displaystyle p_k=\left\{\begin{matrix}q, &k=0\\p, &k=1\end{matrix}\right.\\0<q<1,q=1-p\end{matrix}&p&pq&p{\rm{e}}^{{\rm{i}}t}+q\\\hline
-  二项分布B(n,p)&\begin{matrix}\displaystyle b(k;n,p)=\begin{pmatrix}n\\k\end{pmatrix}p^kq^{n-k}\\k=0,1,\dots,n\\0<q<1,q=1-p\end{matrix}&np&npq&(p{\rm{e}}^{{\rm{i}}t}+q)^n\\\hline
-  泊松分布B(\lambda)&\begin{matrix}\displaystyle p(k;\lambda)=\frac{\lambda^k}{k!}{\rm{e}}^{-\lambda}\\k=0,1,2,\dots,\lambda>0\end{matrix}&\lambda&\lambda&{\rm{e}}^{\lambda({\rm{e}}^{{\rm{i}}t}-1)}\\\hline
-  几何分布&\begin{matrix}\displaystyle g(k;p)=q^{k-1}p\\k=1,2,\dots\\0<p<1,q=1-p\end{matrix}&\displaystyle \frac{1}{p}&\displaystyle \frac{q}{p^2}&\displaystyle \frac{p{\rm{e}}^{{\rm{i}}t}}{1-q{\rm{e}}^{{\rm{i}}t}}\\\hline
-  超几何分布&\begin{matrix}p_k=\frac{\begin{pmatrix}M\\k\end{pmatrix}\begin{pmatrix}N-M\\n-k\end{pmatrix}}{\begin{pmatrix}N\\n\end{pmatrix}},\begin{matrix}M \leqslant N\\n \leqslant N\\M,N,n \in \mathbb{N^*}\end{matrix}\\k=0,1,2,\cdots,\text{min}(M,n)\end{matrix}&\displaystyle \frac{nM}{N}&\displaystyle \frac{nM}{N}\left(1-\frac{M}{N}\right)\cdot\frac{N-n}{N-1}&\displaystyle \sum_{k=0}^{n} \frac{\begin{pmatrix}M\\k\end{pmatrix}\begin{pmatrix}N-M\\n-k\end{pmatrix}}{\begin{pmatrix}N\\n\end{pmatrix}}{\rm{e}}^{{\rm{i}}tk}\\\hline
-  帕斯卡分布&\begin{matrix}p_k=\begin{pmatrix}k-1\\r-1\end{pmatrix}p^r q^{k-r}\\k=r,r+1,\cdots\\0<p<1,q=1-p,r \in \mathbb{N^*}\end{matrix}&\displaystyle \frac{r}{p}&\displaystyle \frac{rq}{p^2}&\displaystyle \left(\frac{p{\rm{e}}^{{\rm{i}}t}}{1-q{\rm{e}}^{{\rm{i}}t}}\right)^r\\\hline
-  负二项分布&\begin{matrix}p_k=\begin{pmatrix}-r\\k\end{pmatrix}p^r (-q)^{k}\\k=0,1,2,\cdots\\0<p<1,q=1-p,r>0\end{matrix}&\dfrac{rq}{p}&\dfrac{rq}{p^2}&\displaystyle \left(\frac{p}{1-q{\rm{e}}^{{\rm{i}}t}}\right)^r\\\hline
-  \begin{matrix}高斯分布\\(正态分布)\\N(\mu,\sigma^2)\end{matrix}&\begin{matrix}\displaystyle p(x)=\frac{1}{\sqrt{2\pi}\sigma}{\rm{e}}^{-\frac{(x-\mu)^2}{2\sigma^2}}\\-\infty <x<\infty,\mu,\sigma>0\end{matrix}&\mu&\sigma^2&\displaystyle {\rm{e}}^{{\rm{i}}\mu t-\frac{1}{2}\sigma^2t^2}\\\hline
-  均匀分布U[a,b]&\begin{matrix}\displaystyle p(x)=\left\{\begin{matrix}\frac{1}{b-a}, &a\leqslant x\leqslant b\\0, &\text{otherwise}\end{matrix}\right.\\a<b\end{matrix}&\displaystyle \frac{a+b}{2}&\displaystyle \frac{(b-a)^2}{12}&\displaystyle \frac{{\rm{e}}^{{\rm{i}}tb}-{\rm{e}}^{{\rm{i}}ta}}{{\rm{i}}t(b-a)}\\\hline
-  指数分布\mathrm{Exp}(\lambda)&\begin{matrix}\displaystyle p(x)=\left\{\begin{matrix}\lambda {\rm{e}}^{-\lambda x}, &x \geqslant 0\\0, &x<0\end{matrix}\right.\end{matrix}&\lambda ^{-1}&\lambda ^{-2}&\displaystyle \left(1-\frac{{\rm{i}}t}{\lambda}\right)^{-1}\\\hline
-  卡方分布(\chi^2分布)&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \frac{1}{2^{\frac{n}{2}}\Gamma \left(\frac{n}{2}\right)}x^{\frac{n}{2}-1}{\rm{e}}^{\frac{-x}{2}}, &x \geqslant 0\\0, &x<0\end{matrix}\right.\\n \in \mathbb{N^*}\end{matrix}&n&2n&(1-2{\rm{i}}t)^{-\frac{n}{2}}\\\hline
-  \begin{matrix}\Gamma分布\\\Gamma(r,\lambda)\\r为正整数时为埃尔朗分布\end{matrix}&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \frac{\lambda^r}{\Gamma(r)}x^{r-1}{\rm{e}}^{-\lambda x}, &x \geqslant 0\\0, &x<0\end{matrix}\right.\\r>0,\lambda>0\end{matrix}&r\lambda^{-1}&r\lambda^{-2}&\left(1-\dfrac{{\rm{i}}t}{\lambda}\right)^{-r}\\\hline
-  柯西分布&\begin{matrix}\displaystyle p(x)=\frac{1}{\pi}\cdot \frac{\lambda}{\lambda^2+(x-\mu)^2}\\-\infty <x<\infty,\lambda>0\end{matrix}&不存在&不存在&{\rm{e}}^{{\rm{i}}\mu t-\lambda|t|}\\\hline
-  t分布&\begin{matrix}\displaystyle p(x)=\frac{\Gamma\left(\frac{n+1}{2}\right)}{\sqrt{n\pi}\Gamma\left(\frac{n}{2}\right)}\left(1+\frac{x^2}{n}\right)^{-\frac{(n+1)}{2}}\\-\infty <x<\infty,n \in \mathbb{N^*}\end{matrix}&0(n>1)&\dfrac{n}{n-2}(n>2)&\\\hline
-  帕累托分布&\begin{matrix}p(x)=\left\{\begin{matrix}rA^r\frac{1}{x^{r+1}}, &x \geqslant A\\0, &x<A\end{matrix}\right.\\r>0,A>0\end{matrix}&(r>1时存在)&(r>2时存在)&\\\hline
-  F分布&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \frac{\Gamma\left(\frac{k_1+k_2}{2}\right)}{\Gamma\left(\frac{k_1}{2}\right)\Gamma\left(\frac{k_2}{2}\right)}k_1^\frac{k_1}{2}k_2^\frac{k_2}{2}\cdot\frac{x^{\frac{k_1}{2}-1}}{\left(k_2+k_1x\right)^{\frac{k_1+k_2}{2}}}, &x \geqslant 0\\0, &x<0\end{matrix}\right.\\k_1,k_2 \in \mathbb{N^*}\end{matrix}&\begin{matrix}\dfrac{k_2}{k_2-2}\\(k_2>2)\end{matrix}&\begin{matrix}\dfrac{2k_2^2(k_1+k_2-2)}{k_1(k_2-2)^2(k_2-4)}\\k_2>4\end{matrix}\\\hline
-  \beta分布&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \frac{\Gamma(p+q)}{\Gamma(p)\Gamma(q)}x^{p-1}(1-x)^{q-1}, &0<x<1\\0, &x\leqslant0 \text{ or }x\geqslant1\end{matrix}\right.\\p>0,q>0\end{matrix}&\dfrac{p}{p+q}&\dfrac{pq}{(p+q)^2(p+q+1)}&\displaystyle \frac{\Gamma(p+q)}{\Gamma(p)}\cdot\sum^{\infty}_{j=0}\frac{\Gamma(p+j)({\rm{i}}t)^j}{\Gamma(p+q+j)\Gamma(j+1)}\\\hline
-  对数分布&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \frac{1}{\sigma x \sqrt{2\pi}}{\rm{e}}^{-\frac{(\ln x-\alpha)^2}{2\sigma^2}}, &x > 0\\0, &x\leqslant0\end{matrix}\right.\\\alpha,\sigma>0 \end{matrix}& {\rm{e}}^{\alpha+\frac{\sigma^2}{2}}&{\rm{e}}^{2\alpha+\sigma^2({\rm{e}}^{\sigma^2}-1)}\\\hline
-  韦布尔分布&\begin{matrix}p(x)=\left\{\begin{matrix}\displaystyle \alpha\lambda x^{\alpha-1}{\rm{e}}^{-\lambda x^\alpha}, &x > 0\\0, &x\leqslant0\end{matrix}\right.\\\lambda>0,\alpha>0\end{matrix}&\displaystyle \Gamma\left(\frac{1}{\alpha}+1\right)\cdot\lambda^{-\frac{1}{\alpha}}&\displaystyle \lambda^{-\frac{2}{\alpha}}\left[\Gamma\left(\frac{2}{\alpha}+1\right)-\left(\Gamma\left(\frac{1}{\alpha}+1\right)\right)^2\right]\\\hline
-  \end{matrix}
-$$
+![](./img/fb1.png)
+
+![](./img/fb2.png)
+
+![](./img/fb3.png)
+
+![](./img/fb4.png)
 
 **泊松定理**：在伯努利试验中，$$p_n$$代表事件A在试验中出现的概率。在n较大，通常取大于等于100，p较小，通常取小于等于0.1的情况下，如果$$\lim \limits_{n\rightarrow +\infty} np_n = \lambda$$, 则
 $$
@@ -245,7 +229,7 @@ $$
 
 ## 大数定理和中心极限定理
 
-> 参考：https://blog.csdn.net/xq151750111/article/details/120439438
+> 参考：[大数定律与中心极限定理](https://blog.csdn.net/xq151750111/article/details/120439438)
 
 **切比雪夫不等式**：即使X分布未知，仍可以对距离期望足够远的地方事件出现的概率做出估计：
 $$
@@ -271,7 +255,171 @@ $$
 $$
 \sum_{k = 1}^{n}X_k\sim N(n\mu,n\sigma^2)
 $$
-**棣莫弗-拉普拉斯极限定理**：是独立同分布中心极限定理的特殊情况，当$$X_n\sim B(n,p)$$时：
+**棣莫弗-拉普拉斯中心极限定理**：是独立同分布中心极限定理的特殊情况，当$$X_n\sim B(n,p)$$时：
 $$
 \lim_{n \to \infty}P\{\frac{X_n - np}{\sqrt{np(1-p)}} \leq x \} = \Phi(x)
 $$
+
+## 数理统计基础概念
+
+在一个统计问题里，研究对象的全体叫做**总体**，构成总体的每个成员称为**个体**。从总体中随机抽取的部分个体组成的集合称为**样本**，样本个数称为**样本容量**。
+
+**统计量**：不含未知参数的样本函数称为统计量。统计量的分布称为抽样分布。
+
+**样本均值**：
+$$
+\overline{X}=\frac{1}{n}\sum_{i=1}^{n}X_i
+$$
+
+$$
+E(\overline{X})=E(X)=\mu
+$$
+
+**样本方差**：
+$$
+S^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\overline{X})^2
+$$
+
+$$
+E(S^2)=D(X)=\sigma^2
+$$
+
+$$
+D(\overline{X})=\frac{1}{n}D(X)=\frac{\sigma^2}{n}
+$$
+
+**k阶原点矩**（样本均值为一阶原点矩）：
+$$
+A_k=\frac{1}{n}\sum_{i=1}^{n}X_i^k
+$$
+**k阶中心距**（样本方差为二阶中心矩）：
+$$
+B_k=\frac{1}{n}\sum_{i=1}^n(X_i-\overline{X})^k
+$$
+
+### 常用统计抽样分布
+
+> 参考：[统计三大分布](https://blog.csdn.net/SanyHo/article/details/105218103)、[样本及抽样分布](https://wulc.me/2016/11/18/%E6%A6%82%E7%8E%87%E8%AE%BA%E4%B8%8E%E6%95%B0%E7%90%86%E7%BB%9F%E8%AE%A1%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(5)--%E6%A0%B7%E6%9C%AC%E5%8F%8A%E6%8A%BD%E6%A0%B7%E5%88%86%E5%B8%83/)、[正态总体的样本均值与样本方差的分布定理](https://blog.csdn.net/SpiritedAway1106/article/details/108608994)
+
+$$\chi^2$$**分布**：
+
+是由正态分布派生出来的一种分布，如果$$X_1,...X_n$$都服从标准正态分布，则称随机变量：
+$$
+\chi^2=X_1^2+X_2^2+···+X_n^2
+$$
+所服从的分布为自由度为n的$$\chi^2$$**分布**，记为$$\chi^2 \sim \chi^2(n) $$
+
+> 关于期望和方差，复习一下上面的常见分布表！
+
+- 可加性：$$\chi_1^2 + \chi_2^2 \sim \chi^2(n_1+n_2) $$
+- 上$$\alpha$$分位点
+
+![](./img/k2.png)
+
+**t分布**：
+
+$$X \sim N(0,1),Y \sim \chi^2(n)$$ 且X与Y相互独立，则称随机变量：
+$$
+T=\frac{X}{\sqrt{Y/n}}
+$$
+所服从的分布为自由度为n的t分布。记为 $$T \sim t(n)$$
+
+- t分布的密度函数关于x=0对称，$$t_{1-\alpha}(n)=-t_{\alpha}(n)$$
+- 当n充分大时，其图形类似于标准正态分布密度函数的图形。
+
+**F分布**：
+
+X与Y相互独立，$$X \sim \chi^2(n_1),Y \sim \chi^2(n_2)$$，则称随机变量：
+$$
+F=\frac{X/n_1}{Y/n_2}
+$$
+服从自由度为$$n_1$$ 以及$$n_2$$ 的F分布，记作$$ F\sim F(n_1,n_2)$$
+
+- $$F_{1-\alpha}(n_1,n_2)=\frac{1}{F_\alpha(n_2,n_1)} $$
+- $$\frac{1}{F} \sim F(n_2,n_1)$$
+
+**正态总体的抽样分布性质**：
+
+$$X_1,...X_n$$是来自正态总体$$N(\mu,\sigma^2)$$的样本，则：
+$$
+E(\overline{X})=\mu,\quad D(\overline{X})=\sigma^2/n, \quad E(S^2)=\sigma^2, \quad \overline{X}\sim N(\mu,\sigma^2/n).
+$$
+$$\overline{X}$$与$$S^2$$相互独立，且：
+$$
+\frac{(n-1)S^2}{\sigma^2}\sim \chi^2(n-1) 
+$$
+$$
+\frac{\overline{X}-\mu}{S/\sqrt{n}}\sim t(n-1) 
+$$
+
+$$X_1,...X_n$$是来自正态总体$$N(\mu_1,\sigma_1^2)$$的样本，$$Y_1,...Y_n$$是来自正态总体$$N(\mu_2,\sigma_2^2)$$的样本，则：
+$$
+\quad \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}\sim F(n_1-1,n_2-1)
+$$
+
+$$
+\frac{(\overline{X}-\overline{Y})-(\mu_1-\mu_2)}{S_w\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\sim t(n_1+n_2-2)
+$$
+
+$$
+S_w^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}
+$$
+
+## 参数估计
+
+统计学与概率论的区别就是归纳和演绎，前者通过样本推测总体的分布（似然），而后者已知总体分布去研究样本。因此参数估计则是归纳的过程。
+
+参数估计有两种形式：**点估计**和**区间估计**（点估计和区间估计都是对于未知参数的估计，而**点估计给出的是一个参数可能的值**，**区间估计给出的是参数可能在的范围**）。
+
+### 点估计
+
+设$$X_1, ..., X_n$$是来自总体的样本，用于估计未知参数$$\theta$$的统计量$$\hat{\theta}=\hat{\theta}(X_1, ..., X_n)$$成为$$\theta$$的估计量，或称为$$\theta$$的点估计。
+
+**无偏估计**：$$E(\hat{\theta})=\theta$$
+
+**更有效的估计**：在都为无偏估计的情况下，$$D(\hat{\theta})$$ 小的更有效
+
+**相合估计**：经验分布函数逼近真实分布函数，$$\lim_{n\rightarrow\infty}P(|\hat{\theta}_n-\theta|\geq\epsilon)=0$$
+
+**矩估计法**：
+
+矩估计基于大数定律（格里纹科定理），实质是用经验分布函数去替换总体分布，矩估计可以概括为：**用样本矩代替总体矩**（可以是原点矩也可以是中心矩）
+$$
+E(X^j)=\frac{1}{n}\sum_{i=1}^{n}X_i^j
+$$
+
+> 公式左边是总体结论，公式右边来自样本，几个未知参数列几个方程（尽量使用低阶矩）
+
+**最大似然估计**：
+
+将样本的联合概率函数看成$$\theta$$的函数，$$L(\theta)$$称为样本的**似然函数**：
+$$
+L(\theta)=L(x_1,...,x_n;\theta)=\prod_{i=1}^n p(x_i;\theta)
+$$
+若统计量$$\hat{\theta}=\hat{\theta}(x_1,...,x_n)$$满足
+$$
+L(\hat{\theta})=\max_{\theta\in\Theta}L(\theta)
+$$
+则称$$\hat{\theta}$$是$$\theta$$的**最大似然估计**，简称MLE（maximum likelihood estimate），其中$$\Theta$$表示参数空间。换句话说，想找到一个估计，使**已经观测到的事件发生的可能性最大**。
+
+**最大似然估计步骤：**
+
+* 写出似然函数；
+* 对似然函数取对数，并整理；
+* 求参数向量的偏导，令其为0，得到似然方程；
+* 求解似然方程，其解为参数值。
+
+### 区间估计
+
+如果：
+$$
+P_\theta(\hat{\theta}_L\leq\theta\leq\hat{\theta}_U)=1-\alpha
+$$
+称随机区间$$[\hat{\theta}_L,\hat{\theta}_U]$$为$$\theta$$的置信水平为$$1-\alpha$$的置信区间
+
+![](./img/zx1.jpg)
+
+![](./img/zx2.jpg)
+
+## 假设检验
+
