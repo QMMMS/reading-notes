@@ -69,6 +69,8 @@ API 创建者在创建新的类的时候，只暴露必要的接口，而隐藏�
 
 如果子类只是重写了父类的方法，那么它们之间的关系就是 is-a 的关系，但如果子类增加了新的方法，那么它们之间的关系就变成了 is-like-a 的关系。
 
+### 多继承
+
 Java 语言只支持类的单继承，但可以通过实现接口的方式达到多继承的目的。有三种实现多继承效果的方式，**分别是**内部类、多层继承和实现接口。
 
 ![](./img/djc1.png)
@@ -81,7 +83,17 @@ Java 语言只支持类的单继承，但可以通过实现接口的方式达到
 
 父类的构造方法不能被继承，子类的构造过程必须调用其父类的构造方法，如果子类的构造方法中没有显示地调用父类构造方法，则系统默认调用父类无参数的构造方法`super()`。
 
-**方法重写**(Override)是子类中出现和父类中一模一样的方法(包括返回值类型，方法名，参数列表)，它建立在继承的基础上。你可以理解为方法的外壳不变，但是核心内容重写。
+### 重写与重载
+
+**方法重写**(Override)是子类中出现和父类中一模一样的方法(包括返回值类型，方法名，参数列表)，它建立在继承的基础上，你可以理解为方法的外壳不变，但是核心内容重写。
+
+- 父类private方法在子类中不算重写，其对子类并不可见
+- final 方法意味着它无法被子类继承到，所以就没办法重写
+- static 方法也不允许重写，因为静态方法可用于父类以及子类的所有实例
+- 重写的方法不能使用限制等级更严格的权限修饰符
+- 重写后的方法只能抛出比父类异常或者其子类
+- 可以在子类中通过 super 关键字来调用父类中被重写的方法
+- 构造方法不能被重写
 
 ```java
 class E1{
@@ -118,6 +130,153 @@ class E3{
 ```
 
 此外，**继承当中子类抛出的异常必须是父类抛出的异常或父类抛出异常的子异常**
+
+### 关键字this
+
+**指向当前对象**：
+
+```java
+WithThisStudent(String name, int age) {
+    this.name = name;
+    this.age = age;
+}
+```
+
+**调用当前类的方法**：
+
+```java
+public class InvokeCurrentClassMethod {
+    void method1() {}
+    void method2() {
+        method1();
+        
+        // 在字节码文件中变成
+        // this.method1();
+    }
+
+    public static void main(String[] args) {
+        new InvokeCurrentClassMethod().method1();
+    }
+}
+```
+
+**调用当前类的构造方法**：
+
+```java
+public class InvokeConstrutor {
+    InvokeConstrutor() {
+        System.out.println("hello");
+    }
+
+    InvokeConstrutor(int count) {
+        this();
+        System.out.println(count);
+    }
+
+    public static void main(String[] args) {
+        InvokeConstrutor invokeConstrutor = new InvokeConstrutor(10);
+    }
+}
+```
+
+> 也可以调用有参构造方法，但是`this()` 必须放在构造方法的第一行
+
+**作为参数在方法中传递**：
+
+```java
+public class ThisAsParam {
+    void method1(ThisAsParam p) {
+        System.out.println(p);
+    }
+
+    void method2() {
+        method1(this);
+    }
+
+    public static void main(String[] args) {
+        ThisAsParam thisAsParam = new ThisAsParam();
+        System.out.println(thisAsParam);
+        thisAsParam.method2();  // 两次print同一个对象
+    }
+}
+```
+
+**作为方法的返回值**
+
+```java
+public class ThisAsMethodResult {
+    ThisAsMethodResult getThisAsMethodResult() {
+        return this;
+    }
+    
+    void out() {
+        System.out.println("hello");
+    }
+
+    public static void main(String[] args) {
+        new ThisAsMethodResult().getThisAsMethodResult().out();
+    }
+}
+```
+
+`getThisAsMethodResult()` 方法返回了 this 关键字，指向的就是 `new ThisAsMethodResult()` 这个对象，所以可以紧接着调用 `out()` 方法——达到了**链式调用**的目的
+
+### 关键字super
+
+- 指向父类对象；
+- 调用父类的方法；
+- `super()` 可以调用父类的构造方法。
+
+```java
+public class ReferParentField {
+    public static void main(String[] args) {
+        new Dog().printColor();
+    }
+}
+
+class Animal {
+    String color = "白色";
+    
+    Animal(){
+        System.out.println("动物来了");
+    }
+    
+    void eat() {
+        System.out.println("动物吃...");
+    }
+}
+
+class Dog extends Animal {
+    String color = "黑色";
+
+    void printColor() {
+        System.out.println(color);  // 黑色
+        System.out.println(super.color);  // 白色
+    }
+    
+    @Override
+    void eat() {
+        System.out.println("吃...");
+    }
+    
+    void bark() {
+        System.out.println("汪汪汪...");
+    }
+    
+    void work() {
+        super.eat();  // 动物吃...
+        bark();
+    }
+    
+    Dog() {
+        super();  // 调用父类的构造方法
+        // 默认情况下，super() 是可以省略的，编译器会主动去调用父类的构造方法
+        // super() 也可以用来调用父类的有参构造方法
+        System.out.println("狗狗来了");
+    }
+}
+
+```
 
 ## 多态
 
