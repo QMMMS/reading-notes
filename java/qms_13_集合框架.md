@@ -15,7 +15,7 @@ Java 集合框架可以分为两条大的支线：
 ## List
 
 - LinkedList 是由双向链表实现的
-- ArrayList 是由数组实现的，内部数组的容量不足时会自动扩容
+- ArrayList 是由数组实现的，内部数组的容量不足时会自动1.5倍扩容
 - Vector，比 ArrayList 出现得更早。ArrayList 和 Vector 非常相似，只不过 Vector 是线程安全的，导致执行效率会比较低，所以现在已经很少用了
 - Stack 是 Vector 的一个子类，本质上也是由动态数组实现的，实现了先进后出的功能
 - Stack 执行效率比较低（同步），就被双端队列 ArrayDeque 取代了

@@ -83,6 +83,8 @@ public interface Electronic {
   
   // Serializable 接口用来为序列化的具体实现提供一个标记，
   // 也就是说，只要某个类实现了 Serializable 接口，那么它就可以用来序列化了。
+  // Java 的序列化是指，将对象转换成以字节序列的形式来表示，这些字节序中包含了对象的字段和方法。
+  // 序列化后的对象可以被写到数据库、写到文件，也可用于网络传输。
   ```
 
 - **接口的抽象方法不能是 private、protected 或者 final**
