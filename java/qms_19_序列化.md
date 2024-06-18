@@ -89,57 +89,13 @@ try (FileInputStream fileIn = new FileInputStream(filename);
 }
 ```
 
-## Kryo
-
-实际开发中，很少使用 JDK 自带的序列化和反序列化，这是因为：
-
-- 可移植性差：Java 特有的，无法跨语言进行序列化和反序列化。
-- 性能差：序列化后的字节体积大，增加了传输/保存成本。
-- 安全问题：攻击者可以通过构造恶意数据来实现远程代码执行，从而对系统造成严重的安全威胁。
-
-Kryo 是一个优秀的 Java 序列化和反序列化库，具有高性能、高效率和易于使用和扩展等特点，有效地解决了 JDK 自带的序列化机制的痛点。
-
-```java
-public class KryoDemo {
-    public static void main(String[] args) throws FileNotFoundException {
-        Kryo kryo = new Kryo();
-        kryo.register(KryoParam.class);
-
-        KryoParam object = new KryoParam("沉默王二", 123);
-
-        Output output = new Output(new FileOutputStream("logs/kryo.bin"));
-        kryo.writeObject(output, object);  // 将 Java 对象序列化为二进制流
-        output.close();
-
-        Input input = new Input(new FileInputStream("logs/kryo.bin"));
-        KryoParam object2 = kryo.readObject(input, KryoParam.class);  // 反序列化
-        System.out.println(object2);
-        input.close();
-    }
-}
-
-class KryoParam {
-    private String name;
-    private int age;
-
-    public KryoParam() {}
-
-    public KryoParam(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-	
-    // get, set
-
-    @Override
-    public String toString() {
-        return "KryoParam{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
-}
-```
+> 实际开发中，很少使用 JDK 自带的序列化和反序列化，这是因为：
+>
+> - 可移植性差：Java 特有的，无法跨语言进行序列化和反序列化。
+> - 性能差：序列化后的字节体积大，增加了传输/保存成本。
+> - 安全问题：攻击者可以通过构造恶意数据来实现远程代码执行，从而对系统造成严重的安全威胁。
+>
+> Kryo 是一个优秀的 Java 序列化和反序列化库，具有高性能、高效率和易于使用和扩展等特点，有效地解决了 JDK 自带的序列化机制的痛点。
 
 ## Serializbale 接口
 

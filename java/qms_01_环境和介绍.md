@@ -29,7 +29,10 @@ jdk主要包含三个部分：
 
 运行环境，如果只想运行 Java 程序而不需要开发 Java 程序的话，只需要安装 JRE 就可以了。
 
-jdk中包含的jre，在jre的bin目录里有个jvm.dll，既然JRE是运行时环境，那么运行在哪？肯定是JVM虚拟机上了。另，jre的lib目录中放的是一些JAVA类库的class文件，已经打包成jar文件。
+如果你本机上安装了JDK和JRE,可以发现：JDK的bin目录比JRE的bin目录多了一个javac (Java语言编译器)，这一点很好理解，因为JRE只是一个运行环境而已，与开发无关，与编译无
+关。
+
+既然JRE是运行时环境，那么运行在哪？肯定是JVM虚拟机上了，在jre的bin目录里有个jvm.dll。另，jre的lib目录中放的是一些JAVA类库的class文件，已经打包成jar文件。
 
 ## JVM
 

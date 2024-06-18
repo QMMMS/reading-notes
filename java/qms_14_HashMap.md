@@ -32,6 +32,109 @@ static final int hash(Object key) {
 
 下一步，put与get将新的哈希值取模（mod），得到一个实际的存储位置。这个取模操作的目的是将哈希值映射到桶（Bucket）的索引上，桶是 HashMap 中的一个数组，每个桶中会存储着一个链表（或者红黑树），装载哈希值相同的键值对（没有相同哈希值的话就只存储一个键值对）。
 
+## hashCode 方法
+
+那么`hashCode()`方法又是怎么实现的呢？我们在 String 一节已经介绍过它的 `hashCode()` 方法了：
+
+```java
+private int hash; // 缓存字符串的哈希码
+
+public int hashCode() {
+    int h = hash; // 从缓存中获取哈希码
+    // 如果哈希码未被计算过（即为 0）且字符串不为空，则计算哈希码
+    if (h == 0 && value.length > 0) {
+        char val[] = value; // 获取字符串的字符数组
+
+        // 遍历字符串的每个字符来计算哈希码
+        for (int i = 0; i < value.length; i++) {
+            h = 31 * h + val[i]; // 使用 31 作为乘法因子
+        }
+        hash = h; // 缓存计算后的哈希码
+    }
+    return h; // 返回哈希码
+}
+```
+
+31 倍哈希法（31-Hash）是一种简单有效的字符串哈希算法，常用于对字符串进行哈希处理。该算法的基本思想是将字符串中的每个字符乘以一个固定的质数 31 的幂次方，并将它们相加得到哈希值：
+
+$$
+H(s) = (s[0] \times 31^{n-1}) + (s[1] \times 31^{n-1}) + ... + (s[n-1] \times 31^0)
+$$
+31 倍哈希法的优点在于简单易实现，计算速度快，同时也比较均匀地分布在哈希表中。
+
+类似的，Objects 类的 `hash()` 方法可以针对不同数量的参数生成新的 `hashCode()` 值：
+
+```java
+public static int hashCode(Object a[]) {
+     if (a == null)
+         return 0;
+     int result = 1;
+     for (Object element : a)
+         result = 31 * result + (element == null ? 0 : element.hashCode());
+     return result;
+}
+```
+
+$$
+H(a)=(a[0] \times 31^{n-1}) + (a[1] \times 31^{n-1}) + ... + (a[n-1] \times 31^0)
+$$
+
+我们来分析一段代码：
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        Student s1 = new Student(18, "张三");
+        Map<Student, Integer> scores = new HashMap<>();
+        scores.put(s1, 98);
+        System.out.println(scores.get(new Student(18, "张三")));
+    }
+}
+ class Student {
+    private int age;
+    private String name;
+
+     public Student(int age, String name) {
+         this.age = age;
+         this.name = name;
+     }
+
+     @Override
+     public boolean equals(Object o) {
+         Student student = (Student) o;
+         return age == student.age &&
+                 Objects.equals(name, student.name);
+     }
+ }
+```
+
+```
+null
+```
+
+奇怪！我们明明把`Student(18, "张三")`塞进HashMap 中了，为什么get的时候又找不到？
+
+原因就在于重写 `equals()` 方法的时候没有重写 `hashCode()` 方法。默认情况下，`hashCode()` 方法是一个本地方法，会**返回对象的存储地址**，显然 `put()` 中的 s1 和 `get()` 中的 `new Student(18, "张三")` 是两个对象，它们的存储地址肯定是不同的。
+
+> - 如果两个对象调用 `equals()` 方法得到的结果为 true，调用 `hashCode()` 方法得到的结果必定相等；
+> - （等价逆否命题）如果两个对象调用 `hashCode()` 方法得到的结果不相等，调用 `equals()` 方法得到的结果必定为 false；
+> - 反之则不一定
+
+虽然HashMap 的 `get()` 方法会在外面套一层，调用 `hash(key.hashCode())` 计算对象的哈希值，虽然两个不同的 `hashCode()` 结果经过 `hash()` 方法计算后有可能得到相同的结果，但这种概率微乎其微。
+
+怎么解决这个问题呢？很简单，重写 `hashCode()` 方法。
+
+```java
+ @Override
+ public int hashCode() {
+     return Objects.hash(age, name);
+ }
+```
+
+设计 `hashCode()` 时最重要的因素就是：无论何时，对同一个对象调用 `hashCode()` 都应该生成同样的值。如果在将一个对象用 `put()` 方法添加进 HashMap 时产生一个 `hashCode()` 值，而用 `get()` 方法取出时却产生了另外一个 `hashCode()` 值，那么就无法重新取得该对象了。
+
+所以，如果你的 `hashCode()` 方法依赖于对象中易变的数据，用户就要当心了，因为此数据发生变化时，`hashCode()` 就会生成一个不同的哈希值，相当于产生了一个不同的键。也就是说，如果在重写 `hashCode()` 和 `equals()` 方法时，对象中某个字段容易发生改变，那么最好舍弃这些字段，以免产生不可预期的结果。
+
 ## put与get
 
 **put 的时候计算下标，把键值对放到对应的桶上**。
