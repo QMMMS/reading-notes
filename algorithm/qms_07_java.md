@@ -66,8 +66,12 @@ char charAt(int index)
 String substring(int startIndex, int endIndex)
 boolean equals(Object anObject) 
 String format(String format, Object... args) 
+String trim()  // 去除字符串开头和结尾的空格
+String[] split("\\s+");  // 将字符串按照空格分隔成单词数组，可以填其他模式
 // String.format("Hello %s %d %.2f", "World", 5, 5.5)
 ```
+
+> [常用正则表达式](https://github.com/cdoco/learn-regex-zh)
 
 ```java
 String s1 = "Hello";
@@ -91,6 +95,7 @@ int m = Integer.parseInt(list.get(1));
 System.out.println(n + m);
 
 String s2 = String.valueOf(n+m);   // int 转换为字符串
+String binaryString = Integer.toBinaryString(n);  // 二进制字符串
 list.add(s2);
 System.out.println(list.get(list.size()-1));
 ```
@@ -162,6 +167,9 @@ list.remove(0);  // 移除
 
 List<int[]> res = new ArrayList<>();
 int[][] resa = res.toArray(new int[res.size()][2]);  // 转数组
+
+int[] intArray = {1, 2, 3, 4, 5};  // 转ArrayList
+ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(intArray));
 ```
 
 自定义排序：
