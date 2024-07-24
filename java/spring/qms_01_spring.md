@@ -19,20 +19,13 @@ Spring Framework特点：
 
 ## 基础使用
 
-假设已经使用Maven注入好依赖，我们有一个类
+假设已经使用Maven注入好依赖，我们有一个类`com.atguigu.spring6.User`
 
-```java
-package com.atguigu.spring6.bean;
-public class HelloWorld {
-    public void sayHello(){
-    	System.out.println("helloworld");
-    }
-}
-```
+![](./img/springstr.png)
 
 在resources目录创建一个 Spring 配置文件 beans.xml（配置文件名称可随意命名），配置HelloWorld所对应的bean，即将HelloWorld的对象交给Spring的IOC容器管理 通过bean标签配置IOC容器所管理的bean
 
 ```xml
-<bean id="helloWorld" class="com.atguigu.spring6.bean.HelloWorld"></bean>
+ <bean id="user" class="com.atguigu.spring6.User"></bean>
 ```
 
