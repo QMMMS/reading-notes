@@ -56,10 +56,6 @@ class Arraylist<E extends Wanger> {
 }
 ```
 
-## 类型擦除
-
-虚拟机没有泛型，Java 虚拟机会将泛型的类型变量擦除，并替换为限定类型（没有限定的话，就用 `Object`）
-
 没有extend限定，`elementData`字节码如下：
 
 ```java
@@ -77,6 +73,10 @@ Wanger elementData(int index)
     return (Wanger)elementData[index];
 }
 ```
+
+## 类型擦除
+
+虚拟机没有泛型，Java 虚拟机会将泛型的类型变量擦除，并替换为限定类型（没有限定的话，就用 `Object`）
 
 类型擦除会导致一些问题，例如：
 
