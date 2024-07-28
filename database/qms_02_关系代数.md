@@ -1,6 +1,6 @@
 # 关系代数
 
-**关系代数（Relational Algebra）**与SQL查询语言类似，不过多用于理论，SQL查询语言用于现实的数据库查询。
+**关系代数**（Relational Algebra）与SQL查询语言类似，不过多用于理论，SQL查询语言用于现实的数据库查询。
 
 Three types of operations/operators on relations：
 
@@ -18,7 +18,7 @@ Select operation is defined as:
 $$
 \Large \sigma_p(r)=\{t|t \in r \land p(t) \}
 $$
-$p$ is called the selection predicate, connected by : $\land$ (and), $\lor$ (or), $\neg$ (not) , op is one of: $=$, $\ne$, $>$, $<$, $\le$, $\ge$ 
+$$p$$ is called the selection predicate, connected by : $$\land$$ (and), $$\lor$$ (or), $$\neg$$ (not) , op is one of: $$=$$, $$\ne$$, $$>$$, $$<$$, $$\le$$, $$\ge$$ 
 
 ## Project Operation
 
@@ -28,7 +28,7 @@ Notation:
 $$
 \Large \Pi_{A_1,A_2,\dots,A_k}(r)
 $$
-where $A_i$ are attribute names and $r$ is a relation name  
+where $$A_i$$ are attribute names and $$r$$ is a relation name  
 
 **例子1：**
 $$
@@ -53,7 +53,7 @@ WHERE dept_name='Physics';
 
 ## Positional Notation（位置标记）
 
-Use \$1， \$2, . . . refer to the first attribute, the second attribute, and so on.  
+Use \$$1， \$$2, . . . refer to the first attribute, the second attribute, and so on.  
 
 **例子：**
 
@@ -155,7 +155,7 @@ $$
 
 ## Natural-Join Operation
 
-Let r and s be relations on schemas R and S respectively, and assuming $R\cap S = {A_1， A_2， \dots， A_n }$, natural-join operation is defined as:
+Let r and s be relations on schemas R and S respectively, and assuming $$R\cap S = {A_1， A_2， \dots， A_n }$$, natural-join operation is defined as:
 $$
 \Large r \bowtie s = \sigma_{r.A_1=s.A_1 \land \dots \land r.A_n=s.A_n}(r \times s)
 $$
@@ -176,7 +176,7 @@ The theta join operation is defined as:
 $$
 \Large r \bowtie_\theta s = \sigma_\theta(r \times s)
 $$
-where $\theta$ is a predicate on attributes in $R \cup S$
+where $$\theta$$ is a predicate on attributes in $$R \cup S$$
 
 ## Division
 
@@ -238,7 +238,7 @@ $$
 
 ## Assignment Operation
 
-The assignment operation ($\leftarrow$) provides a convenient way to express complex queries.  相当于`with ... as...`
+The assignment operation ($$\leftarrow$$) provides a convenient way to express complex queries.  相当于`with ... as...`
 
 ## Outer Join
 
@@ -259,7 +259,7 @@ Generalized project（广义投影） extends the projection operation by allowi
 $$
 \Large \Pi_{F_1,F_2,\dots,F_n}(E)
 $$
-each of $F_1,F_2,\dots,F_n$ are arithmetic expressions involving constants and attributes in the schema of E  
+each of $$F_1,F_2,\dots,F_n$$ are arithmetic expressions involving constants and attributes in the schema of E  
 
 ## Aggregation functions
 
@@ -268,10 +268,10 @@ $$
 \Large _{G_1,G_2,\dots,G_n} \mathcal{G}_{F_1(A_1),F_2(A_2),\dots,F_n(A_n)}(E)
 $$
 
--   $E$ is any relational-algebra expression
--   $G_1,G_2,\dots,G_n$is a list of attributes on which to group (can be empty) 
--   Each $F_i$ is an aggregate function 
--   Each $A_i$ is an attribute name
+-   $$E$$ is any relational-algebra expression
+-   $$G_1,G_2,\dots,G_n$$is a list of attributes on which to group (can be empty) 
+-   Each $$F_i$$ is an aggregate function 
+-   Each $$A_i$$ is an attribute name
 
 **例子1：**
 
