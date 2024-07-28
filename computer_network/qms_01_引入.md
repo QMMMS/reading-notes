@@ -1,4 +1,4 @@
-# 引入（重要）
+# 引入
 
 Computer network=  components ( host, switch, router, etc) + media + topology +protocol
 
