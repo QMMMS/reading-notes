@@ -48,7 +48,7 @@
 
 **Relationship(联系)**: an association among several entities. 例如导师是老师与学生之间的联系。
 
-**Relationship set (联系集) **： a set of relationships of the same type.  例如`instructor`表是`student`与`teacher`的联系集。联系集一般用菱形表示，示例图见下。
+**Relationship set (联系集)**： a set of relationships of the same type.  例如`instructor`表是`student`与`teacher`的联系集。联系集一般用菱形表示，示例图见下。
 
 A relationship may also have attributes called **descriptive attributes (描述性属性).** 例如老师与学生之间，在某个时间点有了导师关系。这个时间是描述性属性。一般用虚线连在联系集上。如果需要，描述性属性可以变成联系集主码的一部分来确定一个联系。
 
@@ -56,7 +56,7 @@ A relationship may also have attributes called **descriptive attributes (描述�
 
 The association between entity sets is referred to as **participation(参与)**，例如`student`与`teacher`参与了`instructor`联系集。
 
-The function that an entity plays in a relationship is called that entity’s **role (角色) **. 特别是同一个实体集参与两次的联系集，需要明确标出角色，比如联系集先修课程中，需要明确课程id和先修课程id。
+The function that an entity plays in a relationship is called that entity’s **role (角色)**. 特别是同一个实体集参与两次的联系集，需要明确标出角色，比如联系集先修课程中，需要明确课程id和先修课程id。
 
 ![](./img/role.PNG)
 
