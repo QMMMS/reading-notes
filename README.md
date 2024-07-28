@@ -5,6 +5,7 @@
 - algorithm：《数据结构、算法及应用》(C++) *张宪超*
 - computer_composition：《计算机组成原理》*唐朔飞*
 - computer_network：《计算机网络：自顶向下方法》*James F. Kurose 等* 
+- database：《数据库系统概念》*Abraham Silberschatz 等*
 - deep_learning：[吴恩达深度学习](https://www.bilibili.com/video/BV1FT4y1E74V/)；[cs231n](https://www.bilibili.com/video/BV1nJ411z7fe/)
 - java：[二哥的Java进阶之路](https://www.javabetter.cn/)
 - mathematics：《考研数学复习全书基础篇》*李永乐 等*；[线性代数的本质](https://www.bilibili.com/video/BV1ib411t7YR/)
