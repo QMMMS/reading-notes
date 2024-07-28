@@ -1,6 +1,6 @@
 # 规范化
 
-即对**关系模式（Relation schemes）**进行分析，找出其**函数依赖（Functional Dependencies）**，如果不满足**范式（Normal Forms）**，进行分解**（Decomposition）**。
+即对**关系模式（Relation schemes）**进行分析，找出其**函数依赖（Functional Dependencies）**，如果不满足**范式（Normal Forms）**，进行**分解（Decomposition）**。
 
 ## Functional Dependencies
 
@@ -76,7 +76,7 @@ BCNF(Boyce Codd Normal Function): If the relation schema $$R \in 1NF$$ and for e
 
 要求把同一表内的多对多关系删除。
 
-**假设每个供应商(SNO)可以生产多个零件(PNO)，可以供应给多个工程(ENO)，一个工程(ENO)需要多个零件(PNO)，但同一个工程(ENO)的同一个零件(PNO)必须来自同一个供应商。**关系SPE(SNO,PNO,ENO)对应的表数据可能是如下：
+假设每个供应商(SNO)可以生产多个零件(PNO)，可以供应给多个工程(ENO)，一个工程(ENO)需要多个零件(PNO)，但同一个工程(ENO)的同一个零件(PNO)必须来自同一个供应商。关系SPE(SNO,PNO,ENO)对应的表数据可能是如下：
 
 ![](./img/nf4.png)
 
@@ -187,7 +187,7 @@ natural join
 
 ![](./img/ex6.png)
 
-**算法：**即找到一个左侧不包含候选码的函数依赖$$\alpha \to \beta$$，将$$R_i$$分解为$$(R_i-\beta)$$和$$(\alpha, \beta)$$。依照分解顺序不同，分解结果不是唯一的。最后检查是否满足无损分解。
+**算法**：即找到一个左侧不包含候选码的函数依赖$$\alpha \to \beta$$，将$$R_i$$分解为$$(R_i-\beta)$$和$$(\alpha, \beta)$$。依照分解顺序不同，分解结果不是唯一的。最后检查是否满足无损分解。
 
 ![](./img/algo2.png)
 
