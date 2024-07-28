@@ -53,7 +53,7 @@ WHERE dept_name='Physics';
 
 ## Positional Notation（位置标记）
 
-Use \$$1， \$$2, . . . refer to the first attribute, the second attribute, and so on.  
+Use \$1， \$2, . . . refer to the first attribute, the second attribute, and so on.  
 
 **例子：**
 
