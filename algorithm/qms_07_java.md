@@ -165,11 +165,10 @@ list.set(0, "world");  // 修改
 System.out.println(list.get(0));  // 获取
 list.remove(0);  // 移除
 
-List<int[]> res = new ArrayList<>();
-int[][] resa = res.toArray(new int[res.size()][2]);  // 转数组
-
-int[] intArray = {1, 2, 3, 4, 5};  // 转ArrayList
-ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(intArray));
+// 相互转换
+Integer[] array = new Integer[]{1,2,3,4,5};
+ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(array));
+Integer[] array2 = arrayList.toArray(new Integer[0]);
 ```
 
 自定义排序：

@@ -289,3 +289,61 @@ public class LogAspect {
 ![](./img/aopg.png)
 
 这样，在完全不用修改 `CalculatorImpl` 类的情况下，就可以通过切入点表达式语法找到连接点，增强功能。
+
+## SpringBoot
+
+Spring Boot是Spring提供的一个子项目，用于快速构建Spring应用程序。
+
+传统方式构建spring应用程序比较繁琐
+
+- 导入maven依赖繁琐
+- 项目xml配置繁琐
+
+SpringBoot特性包括
+
+- 起步依赖：使用一个Maven坐标，整合了完成需要的所有Maven坐标
+
+  ```
+  <dependency>    
+  	<groupId>org.springframework.boot</groupId>
+  	<artifactId>spring-boot-starter-web</artifactId>
+  </dependency>
+  ```
+
+- 自动配置：遵循约定大约配置的原则，在boot程序启动后，一些bean对象会自动注入到ioc容器，不需要手动声明，简化开发
+
+- 其他特性：内嵌的Tomcat、Jetty（无需部署WAR文件）；外部化配置；不需要XML配置(properties/yml)
+
+SpringBoot的启动流程：
+
+> SpringBoot启动，其本质就是加载各种配置信息，然后初始化IOC容器，在run方法中会真正的实例化容器，并创建容器中需要的Bean实例，最终返回
+
+在启动类执行SpringApplication.run这行代码的时候，在它的方法内部其实会做两个事情
+
+```java
+@SpringBootApplication
+public class App {    
+    public static void main(String[] args) {        
+        ConfigurableApplicationContext context = SpringApplication.run(App.class, args);    
+    }
+}
+```
+
+1. 创建SpringApplication对象；
+   - 确认web应用的类型，一般情况下是Servlet类型，这种类型的应用，将来会自动启动一个tomcat。
+   - 从spring.factories配置文件中，加载默认的ApplicationContextInitializer和ApplicationListener
+   - 记录当前应用的主启动类，将来做包扫描使用
+2. 执行run方法。
+   - 准备Environment对象，它里面会封装一些当前应用运行环境的参数，比如环境变量等等
+   - 实例化容器，这里仅仅是创建ApplicationContext对象
+   - 容器创建好了以后，会为容器做一些准备工作，比如为容器设置Environment、BeanFactoryPostProcessor后置处理器，并且加载主类对应的Definition
+   - 刷新容器，就是我们常说的referesh，在这里会真正的创建Bean实例
+
+IOC容器的初始化，核心工作是在AbstractApplicationContext.refresh方法中完成的
+
+1. 准备BeanFactory，在这一块需要给BeanFacory设置很多属性，比如类加载器、Environment等
+2.  执行BeanFactory后置处理器，这一阶段会扫描要放入到容器中的Bean信息，得到对应的BeanDefinition（注意，这里只扫描，不创建）
+3. 是注册BeanPostProcesor，我们自定义的BeanPostProcessor就是在这一个阶段被加载的, 将来Bean对象实例化好后需要用到
+4. 启动tomcat
+5. 实例化容器中实例化非懒加载的单例Bean, 这里需要说的是，多例Bean和懒加载的Bean不会在这个阶段实例化，将来用到的时候再创建
+6. 当容器初始化完毕后，再做一些扫尾工作，比如清除缓存等 

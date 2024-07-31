@@ -1,3 +1,15 @@
+# JVM
+
+Java 虚拟机：Java Virtual Machine。我们编写 Java 代码，编译 Java 代码，目的不是让它在 Linux、Windows 或者 MacOS 上跑，而是在不同平台上面的 JVM 上跑。实现了“一次编译，到处运行”的理念
+
+![](./img/jvm.png)
+
+HotSpot VM，OracleJDK（商用）和 OpenJDK（开源）的默认虚拟机，也是目前使用最广泛的 Java 虚拟机
+
+JVM 的组织架构：
+
+![](./img/jvm2.png)
+
 有 4 个地方可以用来存储数据。”
 
 1）寄存器。这是最快的存储区，因为它位于 CPU 内部，用来暂时存放参与运算的数据和运算结果。

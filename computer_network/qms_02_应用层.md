@@ -46,6 +46,16 @@ Web caches (proxy server)：Goal: satisfy client request without involving origi
 > | 头名称   | x-forwarded-for                  |
 > | 头内容   | 8.8.8.8                          |
 
+http是明文传输，https是加密的安全传输。比如用wireshark抓你自己网卡的数据包，http的请求是能看到明文数据的，https的请求看到的是乱码。这就避免了http传输过程中被窃听截取，或者冒充篡改。
+
+http+ssl=https，https并不是新的应用层协议，只是http不再直接跟tcp进行通信了，先跟ssl通信，再由ssl和tcp通信。
+
+![](./pic/https.png)
+
+http在url中以http://开始，默认使用的是80端口；https在url中以https://开始，默认使用的是443端口。当然也有奇葩的，比如http使用了8080端口，https使用了8443端口。
+
+https注重安全性，自然要付出时间，性能，金钱的代价，所以比http页面加载时间慢，对服务器资源消耗大，ssl证书费用高。
+
 ## FTP
 
 文件传输协议（file transfer protocol，FTP），基于TCP实现。
