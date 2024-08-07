@@ -372,3 +372,37 @@ class Wangsan {
 ```
 
 创建子类对象时，会先去调用父类的构造方法，而父类构造方法中又调用了被子类覆盖的多态方法，由于父类并不清楚子类对象中的字段值是什么，于是把 int 类型的属性暂时初始化为 0，然后再调用子类的构造方法（子类构造方法知道王小二的年龄是 4）。
+
+## 创建方法
+
+Java 有四种创建对象的方式：
+
+new 关键字创建，这是最常见和直接的方式，通过调用类的构造方法来创建对象。
+
+```java
+Person person = new Person();
+```
+
+反射机制创建，反射机制允许在运行时创建对象，并且可以访问类的私有成员，在框架和工具类中比较常见。
+
+```java
+Class clazz = Class.forName("Person");
+Person person = (Person) clazz.newInstance();
+```
+
+clone 拷贝创建，通过 clone 方法创建对象，需要实现 Cloneable 接口并重写 clone 方法。
+
+```java
+Person person = new Person();
+Person person2 = (Person) person.clone();
+```
+
+序列化机制创建，通过序列化将对象转换为字节流，再通过反序列化从字节流中恢复对象。需要实现 Serializable 接口。
+
+```java
+Person person = new Person();
+ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("person.txt"));
+oos.writeObject(person);
+ObjectInputStream ois = new ObjectInputStream(new FileInputStream("person.txt"));
+Person person2 = (Person) ois.readObject();
+```

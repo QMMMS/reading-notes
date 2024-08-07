@@ -48,3 +48,35 @@ main        # 全局配置
 ```
 
 具体的命令和配置在这里不再展开。可以参考别人写好的配置。
+
+## 与tomcat、apache的区别
+
+Apache HTTP服务器是一个模块化的应用服务器。Apache支持支持模块多，性能稳定，Apache本身是静态解析，适合静态HTML、图片等，但可以通过扩展脚本、模块等支持动态页面等。 
+
+Apche可以支持PHPcgiperl,但是要使用Java的话，需要Tomcat在Apache后台支撑，将Java请求由Apache转发给Tomcat处理。不能将Tomcat和Apache HTTP服务器混淆，Apache HTTP服务器是一个用C语言实现的HTTPWeb服务器；
+
+Tomcat是应用（Java）服务器，它只是一个Servlet(JSP也翻译成Servlet)容器，可以认为是Apache的扩展，但是可以独立于Apache运行。
+
+> *JSP*（全称Java Server Pages）是一种动态网页技术标准。*JSP*部署于网络服务器上，可以响应客户端发送的请求，并根据请求内容动态地生成HTML、XML或其他格式文档的Web网页，然后返回给请求者。
+>
+> Servlet（Server Applet），全称Java Servlet。是用**Java编写的服务器端程序**。其主要功能在于交互式地浏览和修改数据，生成动态Web内容。狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。
+
+实际使用中Apache与Tomcat常常是整合使用：
+
+- 如果客户端请求的是静态页面，则只需要Apache服务器响应请求。
+- 如果客户端请求动态页面，则是Tomcat服务器响应请求。
+- 因为JSP是服务器端解释代码的，这样整合就可以减少Tomcat的服务开销。
+
+nginx相对于apache的优点
+
+- 轻量级，采用 C 进行编写，同样的 web 服务，会占用更少的内存及资源
+- 抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，在高并发下nginx 能保持低资源低消耗高性能；apache是同步多进程模型，一个连接对应一个进程；nginx是异步的，多个连接（万级别）可以对应一个进程；
+- nginx处理静态文件好,耗费内存少
+
+apache 相对于nginx 的优点
+
+- 支持的模块多，基本涵盖所有应用；
+- 性能稳定，而nginx相对bug较多。
+- 动态请求由apache转发请求到后台交由Tomcat进行处理，nginx只适合静态和反向；
+
+更为通用的方案是，前端 nginx 抗并发，后端 apache 集群，配合起来会更好。

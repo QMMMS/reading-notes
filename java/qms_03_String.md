@@ -250,3 +250,10 @@ for (int i = 1; i < 10; i++) {
 System.out.println(sb);
 ```
 
+## StringBuffer
+
+`StringBuffer`和`StringBuilder`类似，但`StringBuffer`是线程安全的，方法前面都加了`synchronized`关键字。
+
+- **String**：适用于字符串内容不会改变的场景，比如说作为 HashMap 的 key。
+- **StringBuilder**：适用于单线程环境下需要频繁修改字符串内容的场景，比如在循环中拼接或修改字符串，是 String 的完美替代品。
+- **StringBuffer**：现在已经不怎么用了，因为一般不会在多线程场景下去频繁的修改字符串内容。
