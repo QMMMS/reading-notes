@@ -256,66 +256,27 @@ int main(){
 
 ## 二叉搜索树
 
-**查找：**
-
 ```cpp
-template <class T>
-BinarySearchTreeNode<T>* BinarySearchTree<T>::search(BinarySearchTreeNode<T>* root, T x) {
-    if (!root)return NULL;
-    if (root->getValue() == x)return root;
-    if (x < root->getValue())return search(root->getLeftChild(), x);
-    else return search(root->getRightChild(), x);
-}
-```
-
-**插入：**
-
-```cpp
-template <class T>
-void BinarySearchTree<T>::insertNode(const T& value) {
-    BinarySearchTreeNode<T>* p = root, * prev = NULL;
-    while (p) {//一直找到p为空，p就是要插入的位置，prev跟踪p为p的父亲
-        prev = p;
-        if (p->getValue() > value)p = p->getLeftChild();
-        else p = p->getRightChild();
+class Node{
+public:
+    int data;
+    Node* left, *right;
+    Node(int data){
+        this->data = data;
+        left = right = NULL;
     }
+};
+Node *tree = NULL;
 
-    if (!root) root = new BinarySearchTreeNode<T>(value);
-    else if (prev->getValue() < value)prev->setRightChild(new BinarySearchTreeNode<T>(value));
-    else prev->setLeftChild(new BinarySearchTreeNode<T>(value));
+Node *build(Node *root, int data){
+    if(root == NULL) return new Node(data);
+    if(data < root->data) root->left = build(root->left, data);
+    else root->right = build(root->right, data);
+    return root;
 }
 ```
 
-**删除：**
-
-```cpp
-template<class T>
-void BinarySearchTree<T>::deleteBST(BinarySearchTreeNode<T>*& root, T x) {
-    if (!root)return;
-    if (root->getValue() == x)deleteByCopying(root);
-    else if (x < root->getValue()) deleteBST(root->leftChild, x);
-    else deleteBST(root->rightChild, x);
-}
-
-template <class T>
-void BinarySearchTree<T>::deleteByCopying(BinarySearchTreeNode<T>*& node) {
-    BinarySearchTreeNode<T>* prev, * temp = node;
-    if (node->leftChild == NULL)node = node->rightChild;//如果要删除的结点没有左孩子或右孩子，直接把另外一个孩子提上来
-    else if (node->rightChild == NULL)node = node->leftChild;
-    else {
-        temp = node->leftChild;
-        prev = node;
-        while (temp->rightChild != NULL) {//如果左右孩子都有，则找到左子树中最靠右（最大）的结点，替换要删除的结点
-            prev = temp;
-            temp = temp->rightChild;
-        }
-        node->setValue(temp->getValue());
-        if (prev == node) prev->setLeftChild(temp->leftChild);//如果左子树中最靠右的结点就是要删除结点的左孩子
-        else prev->setRightChild(temp->leftChild);//因为左子树中最靠右的结点没有右孩子，直接把左孩子提上来
-    }
-    delete temp;
-}
-```
+> 练练手：**1043 Is It a Binary Search Tree**
 
 如果全按顺序插入呢？那就变成全左子树或者全右子树的一串了，查询效率退化为 O(n)
 
@@ -523,3 +484,99 @@ int main() {
 先根遍历与先转为二叉树再前序遍历相同。
 
 后根遍历与先转为二叉树再中序遍历相同。
+
+## 树的直径
+
+> 来自PAT 甲级 1021 Deepest Root
+
+**任务：**
+
+给出N个结点与N-1条边，问：它们能否形成一棵N个结点的树？如果能，则从中选出结点作为树根，使得整棵树的高度最大。输出所有满足要求的可以作为树根的结点。
+
+**分析：**
+
+判断图是否连接用并查集解决。
+
+当图连通时，由于题目保证只有N-1条边，因此一定能确定是一棵树，下面的任务就是选择合适的根结点，使得树的高度最大。具体做法为：
+
+1. 先任意选择一个结点，从该结点开始遍历整棵树，获取能达到的最深的顶点(记为结点集合A)；
+2. 然后从集合A中任意一个结点出发遍历整棵树，获取能达到的最深的顶点(记为结点集合B)。
+3. 这样集合A与集合B的并集即为所求的使树高最大的根结点。
+
+因此，这道题最快只用两次DFS就够了，比较笨的方法是找到每个叶节点然后dfs求最长路并记录，最后将所有最长路为最大值的节点输出，在PAT上也能过，但是在牛客网上是过不了的（牛客网数据略强）。
+
+证明过程见[链接](https://www.cnblogs.com/fxh0707/p/14327987.html)
+
+## Trie前缀树
+
+Trie（发音类似 "try"）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+class Trie {
+
+private:
+    bool isEnd;
+    vector<Trie*> children;
+
+    Trie* searchPrefix(string prefix) {
+        Trie* node = this;  // 从字典树的根开始，搜索前缀。
+        for (char c : prefix) {
+            c -= 'a';
+            if (node->children[c] == nullptr) {
+                // 如果没有找到前缀中的任何字符，就立即返回。
+                return nullptr;
+            }
+            // 如果找到前缀中的字符，则继续向下搜索。
+            node = node->children[c];
+        }
+        // 返回前缀中的最后一个节点。
+        return node;
+    }
+
+public:
+    Trie() {
+        isEnd = false;
+        children = vector<Trie*>(26, nullptr);
+    }
+    
+    void insert(string word) {
+        Trie* node = this;  // 从字典树的根开始，插入字符串。
+        for (char c : word) {
+            if (node->children[c - 'a'] == nullptr) {
+                // 子节点不存在。创建一个新的子节点，
+                // 然后沿着指针移动到子节点，继续搜索下一个字符。
+                node->children[c - 'a'] = new Trie();
+            }
+            // 子节点存在。沿着指针移动到子节点，继续处理下一个字符。
+            node = node->children[c - 'a'];
+        }
+        // 字符串的最后一个字符，然后将当前节点标记为字符串的结尾。
+        node->isEnd = true;
+    }
+    
+    bool search(string word) {
+        Trie* node = this->searchPrefix(word);
+        return node != nullptr && node->isEnd;
+    }
+    
+    bool startsWith(string prefix) {
+        return this->searchPrefix(prefix) != nullptr;
+    }
+};
+
+int main(){
+    Trie* trie = new Trie();
+    trie->insert("apple");
+    cout << trie->search("apple") << endl;   // 返回 true
+    cout << trie->search("app") << endl;     // 返回 false
+    cout << trie->startsWith("app") << endl; // 返回 true
+    trie->insert("app");
+    cout << trie->search("app") << endl;     // 返回 true
+    return 0;
+}
+```

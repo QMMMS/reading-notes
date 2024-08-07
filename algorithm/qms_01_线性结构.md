@@ -73,7 +73,7 @@ void baseTrans(int N, int k) {
 
 ## 字符串
 
-### KMP匹配
+## KMP匹配
 
 **任务：**
 
@@ -141,3 +141,257 @@ int KMP(string T, string P, int pos) {
 	else return -1;
 }
 ```
+
+> 练练手？洛谷P3375 【模板】KMP字符串匹配
+>
+> https://www.luogu.com.cn/problem/P3375
+>
+> 提示：使用C风格字符数组，输入输出用cstdio
+
+>   STL?
+>
+>   ```cpp
+>   string s = "hello world";
+>   int index = s.find("hello");//0
+>   ```
+
+## STL常用容器操作
+
+### set
+
+```cpp
+#include<iostream>
+#include<set>
+#include<string>
+using namespace std;
+
+int main() {
+    set<int> s;
+    pair<set<int>::iterator, bool> result = s.insert(12); // 返回一个pair，第一个元素是一个迭代器，指向插入的元素，第二个元素是一个bool值，表示是否插入成功
+    cout << *result.first << " " << result.second << endl;
+    cout << s.size() << endl;
+    set<int>::iterator it = s.find(12); // 返回一个迭代器，指向元素12，如果没有找到，返回end()
+    cout << *it << endl;
+    s.erase(12);
+    it = s.find(12);
+    if (it == s.end()) cout << "Not found!" << endl;
+
+    return 0;
+}
+```
+
+C++ 11 为 STL 标准库增添了 4 种无序(哈希)容器，可以使用无序set，例如：
+
+```cpp
+#include<unordered_set>
+unordered_set<int> us;
+```
+
+其余用法与传统set一致。
+
+### map
+
+```cpp
+#include<iostream>
+#include<map>
+#include<string>
+using namespace std;
+
+int main() {
+    map<string, string> m;
+    pair<map<string, string>::iterator, bool> ret = m.insert(make_pair("one", "what?")); // 返回一个pair，第一个元素是一个迭代器，指向插入的元素，第二个元素是一个bool值，表示是否插入成功
+    cout << ret.first->first << " " << ret.first->second << " " << ret.second << endl;
+    m["one"] = "yi";
+    cout << m["one"] << endl;
+
+    map<string, string>::iterator it = m.find("onee"); // 返回一个迭代器，指向元素，如果没有找到，返回end()
+    if (it == m.end())cout << "Not found!" << endl;
+    it = m.find("one");
+    if (it != m.end())cout << it->first << " " << it->second << endl;
+
+    m.erase("one");
+    it = m.find("one");
+    if (it == m.end())cout << "Not found!" << endl;
+
+    return 0;
+}
+```
+
+### lower_bound/upper_bound/sort/自定义规则
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(){
+    vector<int> nums = {2,43,1,3,2,3,41,};
+    sort(nums.begin(), nums.end());
+    for(int i : nums) cout << i << " ";
+    cout << endl;
+    //upper_bound返回第一个大于x的数的位置
+    cout << upper_bound(nums.begin(), nums.end(), 3) - nums.begin() << endl;
+    //lower_bound返回第一个大于等于x的数的位置
+    cout << lower_bound(nums.begin(), nums.end(), 3) - nums.begin() << endl;
+    return 0;
+}
+```
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+class TestObj {
+public:
+	int first;
+	double second;
+	TestObj(int f, double s) :first(f), second(s) {}
+	bool operator<(const TestObj& that) const {
+		return this->second < that.second;
+	}
+};
+
+vector<TestObj> v;
+
+int main() {
+	for (int i = 10; i > 0 ; --i) v.push_back(TestObj(i, 1 * i * i * i - 4 * i * i + 10 * i - 100));
+	for (int i = 0; i < 10; ++i) cout << v[i].first << " " << v[i].second << endl;
+	cout << endl << endl;
+	sort(v.begin(), v.end());
+	for (int i = 0; i < 10; ++i) cout << v[i].first << " " << v[i].second << endl;
+	cout << endl << endl;
+	vector<TestObj> ::iterator it = lower_bound(v.begin(), v.end(), TestObj(1, -25));
+	cout << it->first << " " << it->second << endl;
+	it = upper_bound(v.begin(), v.end(), TestObj(1, -25));
+	cout << it->first << " " << it->second << endl;
+
+	return 0;
+}
+```
+
+```cpp
+map<string, vector<record>> records;
+for(auto it=records.begin(); it!=records.end(); it++){
+    sort(it->second.begin(), it->second.end(), [](record a, record b){
+        if(a.day != b.day) return a.day < b.day;
+        if(a.hour != b.hour) return a.hour < b.hour;
+        return a.minute < b.minute;
+    });  // 这里的 sort 函数是一个lambda函数，用来对每个人的记录进行排序
+}
+```
+
+```cpp
+sort(v1positive.begin(), v1positive.end(), greater<int>());  // 大的在前
+sort(v1negative.begin(), v1negative.end(), less<int>());  // 小的在前
+```
+
+```cpp
+#define pq priority_queue<int, vector<int>, greater<int>>
+```
+
+### 其他常用方法
+
+**批量内存（数组）设置**
+
+```cpp
+#include<cstring>
+a[123][4342][123][234];
+memset(a,0,sizeof(a));
+memset(a,0x3f,sizeof(a));//初始化为无穷大
+memset(a,63, sizeof(a));//初始化为无穷大，与上一行效果一样
+```
+
+**不定长输入**
+
+```cpp
+int a[MAX],num;
+while(cin>>num) a[++N]=num;//输入EOF使用Ctrl+D
+```
+
+**字符串与数的转换**
+
+```cpp
+#include<string>
+int num = 1000;
+string s = to_string(num);
+int i = stoi(s.substr(0, 3));
+double d = stod(s);
+```
+
+**预留vector空间**
+
+```cpp
+vector<int> dp(1000);
+vector<vector<int>> children(103, vector<int>());
+```
+
+**读取一整行**
+
+```cpp
+string line;
+getline(cin, line);
+```
+
+警告，getline很容易出现bug（因为linux与windows不同的换行标准），不要普通的 cin >> 和getline 混用
+
+**快读**
+
+```cpp
+inline int read()
+{
+    char c = getchar();int x = 0,s = 1;
+    while(c < '0' || c > '9') {if(c == '-') s = -1;c = getchar();}//是符号
+    while(c >= '0' && c <= '9') {x = x*10 + c -'0';c = getchar();}//是数字
+    return x*s;
+}
+
+int main()
+{
+    std::ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);//加速器
+    int n = read();
+    cout << n << endl;
+    return 0;
+}
+```
+
+**分割字符串**
+
+```cpp
+vector<string> spilt(string str, string pattern){
+    vector<string> res;
+    if(pattern.empty()) return res;
+    int start = 0, index = str.find_first_of(pattern, 0); 
+    // find_first_of()返回第一个匹配的位置，两个参数分别是要查找的字符串和开始查找的位置
+    while(index != str.npos){
+        // str.nops是string类的一个静态成员，表示不存在的位置
+        if(start != index){
+            res.push_back(str.substr(start, index - start));
+        }
+        start = index + 1;
+        index = str.find_first_of(pattern, start);
+    }
+    if(!str.substr(start).empty()){
+        res.push_back(str.substr(start));
+    }
+    return res;
+}
+```
+
+字符串常用方法：
+
+```cpp
+#include<string>
+#include<algorithm>
+using namespace std;
+
+string s = "hello world 34";
+cout << isdigit(s[12]) << endl;  // 1
+reverse(s.begin(), s.end());  // 反转
+cout << s << endl;  // 43 dlrow olleh
+cout << s.substr(3, 5) << endl;  // dlrow，从第三个char开始后的5个char
+```
+
