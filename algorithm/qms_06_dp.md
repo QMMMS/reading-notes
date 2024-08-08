@@ -33,25 +33,11 @@
 > https://www.luogu.com.cn/problem/P1048
 
 ```cpp
-#include<iostream>
-#include<cmath>
-using namespace std;
-
-int T, M;
-int f[102][1003];
-int v[102], t[102];
-
-int main() {
-    cin >> T >> M;
-    for(int i = 1; i <= M; ++i) cin >> t[i] >> v[i];
-    for(int i = 1; i <= M; ++i){
-        for(int j = 1; j <= T; ++j){
-            if(t[i] > j) f[i][j] = f[i-1][j];
-            else f[i][j] = max(f[i-1][j], v[i]+f[i-1][j-t[i]]);
-        }
-  	}
-    cout << f[M][T] << endl;
-    return 0;
+for(int i = 1; i <= M; ++i){
+    for(int j = 1; j <= T; ++j){
+        if(t[i] > j) f[i][j] = f[i-1][j];
+        else f[i][j] = max(f[i-1][j], v[i]+f[i-1][j-t[i]]);
+    }
 }
 ```
 
@@ -100,24 +86,10 @@ for(int i = 1; i <= M; ++i)
 > https://www.luogu.com.cn/problem/P1855
 
 ```cpp
-#include <iostream>
-#include <cmath>
-using namespace std;
-
-int f[205][205];
-int N, M, T;
-int m[205], t[205];
-
-int main(){
-    cin >> N >> M >> T;
-    for(int i = 0; i < N; ++i) cin >> m[i] >> t[i];
-    for(int p = 0; p < N; ++p)
-        for(int i = M; i >= m[p]; --i)
-            for(int j = T; j >= t[p]; --j)
-                f[i][j] = max(f[i][j], f[i - m[p]][j - t[p]] + 1);
-    cout << f[M][T] << endl;
-    return 0;
-}
+for(int p = 0; p < N; ++p)
+    for(int i = M; i >= m[p]; --i)
+        for(int j = T; j >= t[p]; --j)
+            f[i][j] = max(f[i][j], f[i - m[p]][j - t[p]] + 1);
 ```
 
 ## 完全背包
@@ -199,40 +171,10 @@ $$
 
 初始化：令所有$dp[i][0]=1$。
 
-**代码：**
-
-```cpp
-#include<iostream>
-using namespace std;
-
-int N, M;
-const int MAXN = 1e3+5;
-const int MAXM = 1e4+5;
-int ms[MAXN];
-int dp[MAXN][MAXM];
-
-int main(){
-    cin >>N>>M;
-    for(int i=1;i<=N;++i)cin>>ms[i];
-    for(int i=0;i<=N;++i)dp[i][0]=1;
-    for(int i=1;i<=N;++i){
-        for(int j=1;j<=M;++j){
-            int K = j / ms[i];
-            for(int k=0;k<=K;++k){
-                dp[i][j]+=dp[i-1][j-k*ms[i]];
-            }
-        }
-    }
-    cout << dp[N][M] << endl;
-    return 0;
-}
-```
-
 **优化：**
 
-考虑在状态转移方程中，在面额循环中，只用到了上层面额的值，考虑空间上滚动掉一维。
+考虑在状态转移方程中，在面额循环中，只用到了上层面额的值，考虑空间上滚动掉一维。优化状态转移方程，思想与完全背包相似：
 
-优化状态转移方程，思想与完全背包相似：
 $$
 dp[i][j]=dp[i-1][j]+dp[i][j-m_i]
 $$
@@ -269,6 +211,15 @@ $$
         f_{\min}(i) &= \min_{i = 1}^{n} \{ f_{\max}(i - 1) \times a_i, f_{\min}(i - 1) \times a_i, a_i \}
     \end{aligned} 
 $$
+
+## 最长公共子序列
+
+假设字符串 text 1  和 text 2  的长度分别为 m 和 n，创建 m+1 行 n+1 列的二维数组 dp，其中 $$dp[i][j]$$ 表示 text1 [0:i] 和 text2 [0:j] 的最长公共子序列的长度。 
+
+考虑动态规划的边界情况：`dp[i][0]`=0、`dp[0][j]`=0
+
+- 当 text1 [i−1]=text2 [j−1] 时，$$dp[i][j]=dp[i-1][j-1]+1$$ 
+- 当 text1  [i−1] $$\neq$$ text2  [j−1] 时，$$dp[i][j]=\max(dp[i-1][j],dp[i][j-1])$$
 
 ## 分治？
 

@@ -509,7 +509,7 @@ int main() {
 
 ## Trie前缀树
 
-Trie（发音类似 "try"）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+Trie（发音类似 "try"）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。z
 
 ```cpp
 #include<iostream>
@@ -580,3 +580,10 @@ int main(){
     return 0;
 }
 ```
+
+## 杂题思想
+
+[二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/solutions/238552/er-cha-shu-de-zui-jin-gong-gong-zu-xian-by-leetc-2/)：递归遍历整棵二叉树，定义 $$f_x$$  表示 x 节点的子树中是否包含 p 节点或 q 节点，如果包含为 true，否则为 false。那么符合条件的最近公共祖先 x 一定满足如下条件： 
+$$
+(f_{lson}  \&\& f_{rson}  ) ∣∣ ((x = p ∣∣ x = q) \&\& (f_{lson}  ∣∣ f_{rson}  )) 
+$$
