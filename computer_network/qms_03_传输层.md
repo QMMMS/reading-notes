@@ -97,6 +97,8 @@ $$
 
 ## TCP协议（重要）
 
+![](./pic/network-base-20230330190328.png)
+
 传输控制协议（Transmission Control Protocol，TCP），基于连接的，提供可靠数据传输服务，流量控制（flow control），拥塞控制。
 
 ### 报文格式

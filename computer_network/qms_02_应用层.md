@@ -9,6 +9,10 @@ HTTP is “stateless”：server maintains no information about past client requ
 -   Nonpersistent HTTP：At most one object is sent over a TCP connection.
 -   Persistent HTTP：Multiple objects can be sent over single TCP connection between client and server.
 
+![](./pic/http-20230331120336.png)
+
+![](./pic/http-20230331114404.png)
+
 往返时间（Round-Trip Time，RTT）: time for a small packet to travel from client to server and back.
 
 ![](./pic/HTTP.PNG)
