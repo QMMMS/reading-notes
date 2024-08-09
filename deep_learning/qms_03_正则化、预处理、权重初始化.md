@@ -123,6 +123,10 @@ $$
 
 ![](./img/nor.png)
 
+这里补充一点，我们知道 Transformer 中使用的是 layer norm。为什么？时序数据中 样本长度可能不一样。BatchNorm需要补0，LayerNorm不需要， LayerNorm 更稳定，不管样本长还是短，均值和方差是在每个样本内计算。
+
+![](./img/bln.png)
+
 ### 其他不常用但启发思考的做法
 
 随机最大池化：
