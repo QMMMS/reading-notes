@@ -2,8 +2,6 @@
 
 ## 偏差与方差
 
-------
-
 ![数据集拟合](./img/05ac08b96177b5d0aaae7b7bfea64f3a.png)
 
 -   对应最左边一幅图，如果给这个数据集拟合一条直线，但它并不能很好地拟合该数据，这是高偏差（**high bias**）的情况，称为“欠拟合”（**underfitting**）。特点是训练集误差与验证集误差都较大，且误差率相似。
@@ -11,8 +9,6 @@
 -   对应中间一幅图，复杂程度适中，数据拟合适度的分类器，这个数据拟合看起来更加合理，我们称之为“适度拟合”（**just right**），是介于过度拟合和欠拟合中间的一类。特点是训练集误差与验证集误差都较小，且误差率相似。
 
 ##  正则化
-
-------
 
 深度学习可能存在过拟合问题——高方差，解决方法有：
 
@@ -123,9 +119,53 @@ $$
 
 ![](./img/nor.png)
 
-这里补充一点，我们知道 Transformer 中使用的是 layer norm。为什么？时序数据中 样本长度可能不一样。BatchNorm需要补0，LayerNorm不需要， LayerNorm 更稳定，不管样本长还是短，均值和方差是在每个样本内计算。
+### LLM常用的 Normalization
+
+目前流行的主要有两种：**LayerNorm** 和 **RMSNorm**。如果硬要再细分的话，可以根据 Norm 的位置分为 Pre-LayerNorm, Post-LayerNorm, Pre-RMSNorm, Post-RMSNorm.
+
+我们知道 Transformer 中使用的是 layer norm。为什么？时序数据中 样本长度可能不一样。BatchNorm需要补0，LayerNorm不需要， LayerNorm 更稳定，不管样本长还是短，均值和方差是在每个样本内计算。
 
 ![](./img/bln.png)
+
+**研究人员从 LayerNorm 开始，为了提升训练效率也是拼了，一步一步简化成了 RMSNorm 的模样**。
+
+具体来说，Norm的通用公式如下：
+$$
+\text{Norm}(x)=\frac{x-\mu}{\sigma} \cdot \gamma +\beta
+$$
+Batch Norm 和 LayerNorm 都可以表示成上面的样子，只不过计算的维度不同。
+
+RMSNorm 的作者认为，让数据和梯度变成0是否是必要的？作者把 LayerNorm 中的 $$\mu$$ 和 $$\beta$$ 去掉(也可以认为是这两个值变为0)，就得到了 RMSNorm.
+$$
+\text{RMSNorm}(x)=\frac{x}{\text{rms}(x)} \cdot \gamma
+$$
+
+$$
+\text{rms}(x)=\sqrt{\frac{1}{N}\sum_{i=1}^N x_i^2 +\epsilon}
+$$
+
+然后通过实验证明了这样做效果不仅没有下降，计算效率还提升了不少。还能再优化么？优化的方向其实也比较明确：
+
+1. 计算更快
+2. 能让梯度的方差变小。
+
+### Pre Norm 和 Post Norm
+
+**在原始的 Transformers 论文中，使用的是 Post Norm**。每一层的输入先与 Attention 相加，然后才计算 Layer Norm。早期的很多模型都用的是 Post Norm，比如著名的 Bert。
+
+Post Norm 之所以这么设计，是把 Normalization 放在一个模块的最后，这样下一个模块接收到的总是归一化后的结果。这比较符合 Normalization 的初衷，就是为了降低梯度的方差。
+
+如果层数较低还好，如果像是现在的大模型一样堆叠32层，我们熟悉的 ResNet 结构 $$output=X+g(X)$$ 的第一项就可以忽略不计了。具体证明见[网页](https://mp.weixin.qq.com/s?__biz=MzUyOTA5OTcwMg==&mid=2247485966&idx=1&sn=ad8dd077c7cf981f8979df0adf4434f6&chksm=fb5eee6928c9850ea5e4fb054aa7bd2c7efb4de79dc189f8e2fac64e04256bd12accf5242c68&scene=126&sessionid=1723260425&subscene=7&clicktime=1723276677&enterid=1723276677&key=daf9bdc5abc4e8d0d1fb98ad920060fc73d85b34b5a1791aac21c967813bdc41605973d12371fdea4adb73ccf5ec2b3c6e0536528dd08e96a71191401457f5cadb6f4a8d8c996580f6e005e0f1a589a9a3c1b04acd5cc9a3fd547a4ac3fbf83c11c73eac9bb31caaaa97e21ddf207a4bb6de4e1690398a5c5e6bb1b8a3338722&ascene=0&uin=NjIzODI5NjE1&devicetype=Windows+11+x64&version=63090b19&lang=zh_CN&countrycode=CN&exportkey=n_ChQIAhIQhUUVMTwhcnHSMwmEY3fkqBLmAQIE97dBBAEAAAAAAOPONRA2%2FnAAAAAOpnltbLcz9gKNyK89dVj0UZ5GnzKr8B9Bej5FXcOXl2xcEXD9pxQbT5HhQ5xukGSRiRiZ6pjdjmmt1EJ9BalHqmJWVVTRe6vbWn8%2F11OLg8pul8%2FzaDnK8VtRXH4jw82XrlRvpAaFS8qNBHGOxwqB0avRWcN4ATqDyYaeIK45pQ4JBP4BrPWptr6HdnDh%2BoG8b%2F%2Bs6aDN3Cp8eCn98X%2B7TqQWiFyHj9y2dZRNebJo80G9paK8KRCXMfJxGlHqVA%2FIWuzu9lKG0SDZ4G4SWjMz&acctmode=0&pass_ticket=VH%2B%2FPrjzPRs37gIIbYuV8ypU%2B%2BX6ROcjd5ukB3A8E1pk%2BXmUfP4DufPxCmxX1sIN&wx_header=1)
+
+没了 ResNet 的架构，就导致 Transforemrs 在训练的时候，需要小心翼翼。都要加一个 learning rate warm up 的过程，先让模型在小学习率上适应一段时间，然后再正常训练。**warm up 的过程虽然在 Transformers 的论文里就提了一嘴，但是真正训练的时候会发现真的很重要。**
+
+如果将 Layer Norm 的位置改了一下，变成了 Pre Norm。从实验结果发现，Pre Norm 基本上可以不用 warm up。
+
+![](./img/pren.png)
+
+
+
+总结来看，Pre Norm 的训练更快，且更加稳定，所以之后的模型架构大多都是 Pre Norm 了，比如 GPT，MPT，Falcon，llama 等。
 
 ### 其他不常用但启发思考的做法
 

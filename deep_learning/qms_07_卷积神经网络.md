@@ -317,6 +317,24 @@ FLOPs=(I+I-1+1)\times O = 2I\times O
 $$
 第一个 I 表示乘法运算量，I-1 表示加法运算量，+1表示bias，×O 表示计算O个神经元的值。
 
+**矩阵乘法的 FLOPs**
+
+A 的维度是 (m,n) B的维度是(n,p) 结果矩阵 C 的维度将是(m,p)
+
+矩阵 C 的每一个元素都是一次点积运算，一共 ($$m\times p$$)次点积运算。每个点积运算有 n 次 乘法和 n - 1 次加法。所以
+$$
+FLOPs=m\times p\times(n+n-1)
+$$
+**矩阵 element_wise 操作 FLOPs**
+
+比如矩阵加法，ReLU，对 ReLU(A) 求导等运算，都是矩阵中每个元素的一次操作，这类操作的运算量如下， ewops 表示 element wise operations
+$$
+FLOPs(f_{ewops}(A))=SIZE(A)
+$$
+**反向传播的计算量是前向传播计算量的几倍**？
+
+粗略估算是2倍，因为网络实现的差异，略有浮动。简单一点的解释就是反向传播需要对输入和权重进行求导，所以是前向传播计算量的两倍。
+
 计算代码--以PyTorch框架为例：
 
 ```python
@@ -330,4 +348,6 @@ macs, params = profile(model, inputs=(dummy_input, ))
 from thop import clever_format
 macs, params = clever_format([macs, params], "%.3f")
 ```
+
+
 
