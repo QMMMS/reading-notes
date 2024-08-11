@@ -140,7 +140,7 @@ $$
 
 ![](./img/att.png)
 
-后续为了**权重共享**，又两种改进，MQA 就是 Attention 共享同一个 K 和 V。
+后续为了**权重共享**，有两种改进。Multi-Query Attention（MQA）是一种共享机制的Attention，相比Multi-Head Attention，其Query部分没有区别，Key和Value可以只用一个Head。计算时，对Key和Value进行expand或者repeat操作，使它们填充到与Query一样的维度，后续计算就与Multi-Head Attention没区别。
 
 GQA 觉得这样是不是有点太暴力，于是选择了 MQA(共享一个) 和 MHA（完全不共享） 的一个中间形态，按组来共享。如下图所示：
 
