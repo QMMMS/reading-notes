@@ -262,15 +262,17 @@ System.out.println(m.get("one")); // 输出 1
 
 // 查找键 "two"
 if (m.containsKey("two")) System.out.println(m.get("two"));
-else System.out.println("Not found");
 
 m.remove("one");  // 移除
-if (m.containsKey("one")) System.out.println(m.get("one"));
-else System.out.println("Not found");
 ```
 
 ```java
 map.put(sum, map.getOrDefault(sum, 0) + 1);  // getOrDefault 如果有就取出，没有就取默认值
+```
+
+```java
+for (Integer key : map.keySet());
+for (Integer value : map.values());
 ```
 
 ## Queue
