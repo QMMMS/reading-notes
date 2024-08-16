@@ -15,35 +15,9 @@
 我们重新审视排序过程：我们真的需要把整个数字拿出来比较吗？其实我们可以看作把前面和后面的数字固定不动，只比较要插入的这个数字段和我们要比较的数字段，即：
 
 ```cpp
+// 或者使用Java的 Comparator
 bool cmp(string a, string b){
     return a + b < b + a;
-}
-```
-
-**代码：**
-
-```cpp
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
-using namespace std;
-vector<string> nums;
-int N;
-int main(){
-    cin >> N;
-    string s;
-    for(int i = 0; i < N; i++){
-        cin >> s;
-        nums.push_back(s);
-    }
-    sort(nums.begin(), nums.end(), [](string a, string b){return a + b < b + a;});
-    string ans = "";
-    for(int i = 0; i < N; i++)ans += nums[i];
-    while(ans.size()!=0 && ans[0] == '0')ans.erase(ans.begin());
-    if(ans.size() == 0)cout << 0;
-    else cout << ans;
-    return 0;
 }
 ```
 
@@ -396,3 +370,21 @@ public:
 $$
 pre[j-1]==pre[i]-k
 $$
+
+------
+
+找出下一个排列：
+
+- 例如，`arr = [1,2,3]` 的下一个排列是 `[1,3,2]` 。
+- 类似地，`arr = [2,3,1]` 的下一个排列是 `[3,1,2]` 。
+- 而 `arr = [3,2,1]` 的下一个排列是 `[1,2,3]` ，因为 `[3,2,1]` 不存在一个字典序更大的排列。
+
+标准的 “下一个排列” 算法可以描述为：
+
+1. **从后向前** 查找第一个 相邻升序 的元素对 (i,j)，满足 A[i] < A[j]。此时 [j,end) 必然是降序
+2. 在 [j,end) **从后向前** 查找第一个满足 A[i] < A[k] 的 k。
+3. 将 A[i] 与 A[k] 交换
+4. 可以断定这时 [j,end) 必然是降序，逆置 [j,end)，使其升序
+5. 如果在步骤 1 找不到符合的相邻元素对，说明当前 [begin,end) 为一个降序顺序，则直接跳到步骤 4
+
+![](./pic/xyg.png)
