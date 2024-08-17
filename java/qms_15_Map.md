@@ -25,6 +25,12 @@ HashMap 的实现原理是基于哈希表的，它的底层是一个数组，数
 - 当添加一个键值对时，HashMap 会根据键的哈希值计算出该键对应的数组下标（索引），然后将键值对插入到对应的位置。
 - 当通过键查找值时，HashMap 也会根据键的哈希值计算出数组下标，并查找对应的值。
 
+HashMap 链表转红黑树发生在 table 数组的长度大于 64，且链表的长度大于 8 的时候。为什么？
+
+- 红黑树节点的大小大概是普通节点大小的两倍，所以转红黑树，牺牲了空间换时间，更多的是一种兜底的策略，保证极端情况下的查找效率。
+- 理想情况下，使用随机哈希码，链表里的节点符合泊松分布，出现节点个数的概率是递减的，节点个数为 8 的情况，发生概率仅为`0.00000006`。
+- 至于红黑树转回链表的阈值为什么是 6，而不是 8？是因为如果这个阈值也设置成 8，假如发生碰撞，节点增减刚好在 8 附近，会发生链表和红黑树的不断转换，导致资源浪费。
+
 ## hash 方法
 
 hash 方法的主要作用是将 key 的 hashCode 值进行处理，得到最终的哈希值。由于 key 的 hashCode 值是不确定的，可能会出现哈希冲突，因此需要将哈希值通过一定的算法映射到 HashMap 的实际存储位置上。
@@ -325,9 +331,19 @@ $$
 
 为了解决这个问题，Java 提供了线程安全的 HashMap 实现类 ConcurrentHashMap。ConcurrentHashMap 内部采用了分段锁（Segment），将整个 Map 拆分为多个小的 HashMap，每个小的 HashMap 都有自己的锁，不同的线程可以同时访问不同的小 Map，从而实现了线程安全。在进行插入、删除和扩容等操作时，只需要锁住当前小 Map，不会对整个 Map 进行锁定，提高了并发访问的效率
 
+![](./img/map-20230816155924.png)
+
+也可以使用Collections.synchronizedMap，内部是通过 synchronized 对象锁来保证线程安全的。
+
+Hashtable 也是线程安全的，直接在方法上加 synchronized 关键字，比较粗暴，它的使用已经不再推荐使用，因为 ConcurrentHashMap 提供了更高的并发性和性能。
+
 ## LinkedHashMap插入顺序
 
-LinkedHashMap 如何维护插入顺序？它并未重写 HashMap 的 `put()` 方法，而是重写了 `put()` 方法需要调用的内部方法 `newNode()`。
+LinkedHashMap 如何维护插入顺序？LinkedHashMap 维护了一个双向链表，有头尾节点，同时 LinkedHashMap 节点 Entry 内部除了继承 HashMap 的 Node 属性，还有 before 和 after 用于标识前置节点和后置节点。
+
+![](./img/lhm.png)
+
+它并未重写 HashMap 的 `put()` 方法，而是重写了 `put()` 方法需要调用的内部方法 `newNode()`。
 
 这是 HashMap 的。
 
