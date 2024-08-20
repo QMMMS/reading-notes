@@ -433,7 +433,7 @@ System.out.println(linkedHashMap);
 
 也就是说，最不经常访问的放在头部
 
-> 这种特性可以使用 LinkedHashMap 来实现 LRU 缓存，LRU 是 Least Recently Used 的缩写，即最近最少使用，是一种常用的页面置换算法，选择最近最久未使用的页面予以淘汰。
+> 这种特性可以使用 LinkedHashMap 来实现 LRU 缓存，LRU 是 Least Recently Used 的缩写，即最近最少使用，是一种常用的页面置换算法，选择最近最久未使用的页面予以淘汰。（一定要自己实现一下，如果只维护插入顺序也可以，put和get里面多用remove 和 put）
 
 LinkedHashMap 是如何来维持访问顺序呢？
 
