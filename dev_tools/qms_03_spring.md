@@ -86,13 +86,23 @@ IOC 就是一种控制反转的思想， 而 DI（Dependency Injection）依赖�
 
 依赖注入指Spring创建对象的过程中，将对象依赖属性通过配置进行注入，依赖注入常见的实现方式包括两种：set注入和构造注入
 
+> 为什么要使用 IoC 呢？
+>
+> 在平时的 Java 开发中，如果我们要实现某一个功能，可能至少需要两个以上的对象来协助完成，在没有 Spring 之前，每个对象在需要它的合作对象时，需要自己 new 一个，比如说 A 要使用 B，A 就对 B 产生了依赖，也就是 A 和 B 之间存在了一种耦合关系。
+>
+> 有了 Spring 之后，就不一样了，创建 B 的工作交给了 Spring 来完成，Spring 创建好了 B 对象后就放到容器中，A 告诉 Spring 我需要 B，Spring 就从容器中取出 B 交给 A 来使用。至于 B 是怎么来的，A 就不再关心了，Spring 容器想通过 newnew 创建 B 还是 new 创建 B，无所谓。
+>
+> 这就是 IoC 的好处，它降低了对象之间的耦合度，使得程序更加灵活，更加易于维护。
+
 ## bean生命周期
+
+![](./img/spring-942a927a-86e4-4a01-8f52-9addd89642ff.png)
 
 - bean对象创建（调用无参构造器）
 
 - 给bean对象设置属性（注入）
 
-- bean的后置处理器（初始化之前）
+- bean的前置置处理器（初始化之前）
 
 - bean对象初始化（需在配置bean时指定初始化方法）
 
@@ -180,6 +190,8 @@ public class User{
 那么如何注入？使用 Autowired，类似上面的自动装配一节，根据类型装配：
 
 > 思考一下底层如何实现？当发现一个带有 `@Autowired` 注解的属性时，就使用反射机制为其赋值，赋什么值呢？当然是从 管理所有Bean 的`Map<String, BeanDefinition>`里面找名字或者类型符合的 Bean
+>
+> 在 Bean 的初始化阶段，会通过 Bean 后置处理器来进行一些前置和后置的处理。实现@Autowired 的功能，也是通过后置处理器来完成的。这个后置处理器就是 AutowiredAnnotationBeanPostProcessor。
 
 ```java
 @Controller
@@ -252,11 +264,11 @@ AOP（Aspect Oriented Programming）是一种设计思想，是面向对象编�
 
 - 横切关注点：分散在每个各个模块中解决同一样的问题，如用户验证、日志管理、事务处理、数据缓存都属于横切关注点。
 - 通知（增强）：通俗说，就是你想要增强的功能，比如 安全，事务，日志等。每一个横切关注点上要做的事情都需要写一个方法来实现，这样的方法就叫通知方法。
-  - 前置通知：在被代理的目标方法**前**执行
-  - 返回通知：在被代理的目标方法**成功结束**后执行（**寿终正寝**）
-  - 异常通知：在被代理的目标方法**异常结束**后执行（**死于非命**）
-  - 后置通知：在被代理的目标方法**最终结束**后执行（**盖棺定论**）
-  - 环绕通知：使用try...catch...finally结构围绕**整个**被代理的目标方法，包括上面四种通知对应的所有位置
+  - 前置通知 (@Before)：在被代理的目标方法**前**执行
+  - 返回通知 (@AfterReturning)：在被代理的目标方法**成功结束**后执行（**寿终正寝**）
+  - 异常通知(@AfterThrowing)：在被代理的目标方法**异常结束**后执行（**死于非命**）
+  - 后置通知 (@After)：在被代理的目标方法**最终结束**后执行（**盖棺定论**）
+  - 环绕通知(@Around)：使用try...catch...finally结构围绕**整个**被代理的目标方法，包括上面四种通知对应的所有位置
 - 切面：封装通知方法的类。
 - 连接点：把方法排成一排，每一个横切位置看成x轴方向，把方法从上到下执行的顺序看成y轴，x轴和y轴的交叉点就是连接点。**通俗说，就是spring允许你使用通知的地方**
 - 切入点：定位连接点的方式。Spring 的 AOP 技术可以通过切入点定位到特定的连接点。通俗说，要实际去增强的方法。
@@ -290,9 +302,88 @@ public class LogAspect {
 
 这样，在完全不用修改 `CalculatorImpl` 类的情况下，就可以通过切入点表达式语法找到连接点，增强功能。
 
+## 事务管理
+
+- **编程式事务管理**：需要在代码中显式调用事务管理的 API 来控制事务的边界，比较灵活，但是代码侵入性较强，不够优雅。
+- **声明式事务管理**：这种方式使用 Spring 的 AOP 来声明事务，将事务管理代码从业务代码中分离出来。优点是代码简洁，易于维护。但缺点是不够灵活，只能在预定义的方法上使用事务。
+
+声明式事务是建立在 AOP 之上的。其本质是通过 AOP 功能，对方法前后进行拦截，将事务处理的功能编织到拦截的方法中，也就是在目标方法开始之前启动一个事务，在目标方法执行完之后根据执行情况提交或者回滚事务。
+
+```java
+@Transactional
+public void transfer(String out, String in, Double money) {
+    accountDao.outMoney(out, money);// 转出
+    accountDao.inMoney(in, money);// 转入
+}
+```
+
+> **只有通过 Spring 容器的 AOP 代理调用的公开方法（public method）上的`@Transactional`注解才会生效**。如果在 protected、private 方法上使用`@Transactional`，这些事务注解将不会生效
+>
+> 原因：Spring 默认使用基于 JDK 的动态代理（当接口存在时）或基于 CGLIB 的代理（当只有类时）来实现事务。这两种代理机制都只能代理公开的方法。
+
+隔离级别：
+
+- ISOLATION_DEFAULT：使用数据库默认的隔离级别，MySQL 默认的是可重复读，Oracle 默认的读已提交。
+- ISOLATION_READ_UNCOMMITTED：读未提交，允许事务读取未被其他事务提交的更改。这是隔离级别最低的设置，可能会导致“脏读”问题。
+- ISOLATION_READ_COMMITTED：读已提交，确保事务只能读取已经被其他事务提交的更改。这可以防止“脏读”，但仍然可能发生“不可重复读”和“幻读”问题。
+- ISOLATION_REPEATABLE_READ：可重复读，确保事务可以多次从一个字段中读取相同的值，即在这个事务内，其他事务无法更改这个字段，从而避免了“不可重复读”，但仍可能发生“幻读”问题。
+- ISOLATION_SERIALIZABLE：串行化，这是最高的隔离级别，它完全隔离了事务，确保事务序列化执行，以此来避免“脏读”、“不可重复读”和“幻读”问题，但性能影响也最大。
+
+## 常用注解总结
+
+**web开发**
+
+①、`@Controller`：用于标注控制层组件。
+
+②、`@RestController`：是`@Controller` 和 `@ResponseBody` 的结合体，返回 JSON 数据时使用。
+
+③、`@RequestMapping`：用于映射请求 URL 到具体的方法上，还可以细分为：
+
+- `@GetMapping`：只能用于处理 GET 请求
+- `@PostMapping`：只能用于处理 POST 请求
+- `@DeleteMapping`：只能用于处理 DELETE 请求
+
+④、`@ResponseBody`：直接将返回的数据放入 HTTP 响应正文中，一般用于返回 JSON 数据。
+
+⑤、`@RequestBody`：表示一个方法参数应该绑定到 Web 请求体。
+
+⑥、`@PathVariable`：用于接收路径参数，比如 `@RequestMapping(“/hello/{name}”)`，这里的 name 就是路径参数。
+
+⑦、`@RequestParam`：用于接收请求参数。比如 `@RequestParam(name = "key") String key`，这里的 key 就是请求参数。
+
+**容器**
+
+- `@Component`：标识一个类为 Spring 组件，使其能够被 Spring 容器自动扫描和管理。
+- `@Service`：标识一个业务逻辑组件（服务层）。比如 `@Service("userService")`，这里的 userService 就是 Bean 的名称。
+- `@Repository`：标识一个数据访问组件（持久层）。
+- `@Autowired`：按类型自动注入依赖。
+- `@Configuration`：用于定义配置类，可替换 XML 配置文件。
+- `@Value`：用于将 Spring Boot 中 application.properties 配置的属性值赋值给变量。
+
+**切面**
+
+`@Aspect` 用于声明一个切面，可以配合其他注解一起使用，比如：
+
+- `@After`：在方法执行之后执行。
+- `@Before`：在方法执行之前执行。
+- `@Around`：方法前后均执行。
+- `@PointCut`：定义切点，指定需要拦截的方法。
+
+**事务**
+
+主要就是 `@Transactional`，用于声明一个方法需要事务支持。
+
+## Spring MVC
+
+Spring MVC 是基于模型-视图-控制器的 Web 框架，它的工作流程也主要是围绕着 Model、View、Controller 这三个组件展开的。
+
+![](./img/spring-e29a122b-db07-48b8-8289-7251032e87a1.png)
+
+![](./img/spring-20240506102456.png)
+
 ## SpringBoot
 
-Spring Boot是Spring提供的一个子项目，用于快速构建Spring应用程序。
+Spring Boot是Spring提供的一个子项目。旨在简化 Spring 应用的配置和部署过程，提供了大量的自动配置选项，以及运行时环境的内嵌 Web 服务器，这样就可以更快速地开发一个 SpringMVC 的 Web 项目。
 
 传统方式构建spring应用程序比较繁琐
 
@@ -310,7 +401,7 @@ SpringBoot特性包括
   </dependency>
   ```
 
-- 自动配置：遵循约定大约配置的原则，在boot程序启动后，一些bean对象会自动注入到ioc容器，不需要手动声明，简化开发
+- 自动配置：遵循约定大约配置的原则，在boot程序启动后，一些bean对象会自动注入到ioc容器，不需要手动声明，简化开发。Spring Boot 的自动装配原理依赖于 Spring 框架的依赖注入和条件注册，通过这种方式，Spring Boot 能够智能地配置 bean，并且只有当这些 bean 实际需要时才会被创建和配置。
 
 - 其他特性：内嵌的Tomcat、Jetty（无需部署WAR文件）；外部化配置；不需要XML配置(properties/yml)
 
