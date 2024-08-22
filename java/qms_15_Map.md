@@ -333,6 +333,10 @@ $$
 
 ![](./img/map-20230816155924.png)
 
+有些方法需要跨段，比如 `size()`、`isEmpty()`、`containsValue()`，它们可能需要锁定整个表而不仅仅是某个段，这需要按顺序锁定所有段，操作完后，再按顺序释放所有段的锁。
+
+可以说，ConcurrentHashMap 是一个二级哈希表。在一个总的哈希表下面，有若干个子哈希表。在 get 操作中，需要为输入的 Key 做 Hash 运算，得到 hash 值。通过 hash 值，定位到对应的 Segment 对象再次通过 hash 值，定位到 Segment 当中数组的具体位置。
+
 也可以使用Collections.synchronizedMap，内部是通过 synchronized 对象锁来保证线程安全的。
 
 Hashtable 也是线程安全的，直接在方法上加 synchronized 关键字，比较粗暴，它的使用已经不再推荐使用，因为 ConcurrentHashMap 提供了更高的并发性和性能。
