@@ -329,17 +329,19 @@ $$
 
 **put 和 get 并发时会导致 get 到 null**：线程 1 执行 put 时，因为元素个数超出阈值而导致出现扩容，线程 2 此时执行 get，就有可能出现这个问题
 
-为了解决这个问题，Java 提供了线程安全的 HashMap 实现类 ConcurrentHashMap。ConcurrentHashMap 内部采用了分段锁（Segment），将整个 Map 拆分为多个小的 HashMap，每个小的 HashMap 都有自己的锁，不同的线程可以同时访问不同的小 Map，从而实现了线程安全。在进行插入、删除和扩容等操作时，只需要锁住当前小 Map，不会对整个 Map 进行锁定，提高了并发访问的效率
+为了解决这个问题，ConcurrentHashMap 是 HashMap 的线程安全版本，使用了 CAS、synchronized、volatile 来确保线程安全。ConcurrentHashMap 内部采用了分段锁（Segment），将整个 Map 拆分为多个小的 HashMap，每个小的 HashMap 都有自己的锁，不同的线程可以同时访问不同的小 Map，从而实现了线程安全。在进行插入、删除和扩容等操作时，只需要锁住当前小 Map，不会对整个 Map 进行锁定，提高了并发访问的效率
 
 ![](./img/map-20230816155924.png)
 
 有些方法需要跨段，比如 `size()`、`isEmpty()`、`containsValue()`，它们可能需要锁定整个表而不仅仅是某个段，这需要按顺序锁定所有段，操作完后，再按顺序释放所有段的锁。
 
-可以说，ConcurrentHashMap 是一个二级哈希表。在一个总的哈希表下面，有若干个子哈希表。在 get 操作中，需要为输入的 Key 做 Hash 运算，得到 hash 值。通过 hash 值，定位到对应的 Segment 对象再次通过 hash 值，定位到 Segment 当中数组的具体位置。
+可以说，ConcurrentHashMap 是一个二级哈希表。在一个总的哈希表下面，有若干个子哈希表。在 get 操作中，需要为输入的 Key 做 Hash 运算，得到 hash 值。通过 hash 值，定位到对应的 Segment 对象再次通过 hash 值，定位到 Segment 当中数组的具体位置。Segment 是一种可重入的锁 ReentrantLock，HashEntry 则用于存储键值对数据。
+
+![](./img/collection-31.png)
 
 也可以使用Collections.synchronizedMap，内部是通过 synchronized 对象锁来保证线程安全的。
 
-Hashtable 也是线程安全的，直接在方法上加 synchronized 关键字，比较粗暴，它的使用已经不再推荐使用，因为 ConcurrentHashMap 提供了更高的并发性和性能。
+Hashtable 也是线程安全的，直接在方法上加 synchronized 关键字，比较粗暴，对整个 Map 加锁来实现线程安全， 在任何时刻只允许一个线程访问整个 Map。它的使用已经不再推荐使用，因为 ConcurrentHashMap 提供了更高的并发性和性能。
 
 ## LinkedHashMap插入顺序
 
