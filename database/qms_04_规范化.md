@@ -40,7 +40,7 @@ A relation schema R is in first normal form ( 1NF) if the domains of all attribu
 
 ### 2NF 
 
-If the relation schema $$R \in 1NF$$ and no any non-prime attribute（非主属性）is partially dependent on the candidate key, then $$R \in 2NF$$。如果存在一个函数依赖，左边是候选码的子集，那么就不满足2NF范式。
+If the relation schema $$R \in 1NF$$ and no any non-prime attribute（非主属性）is partially dependent on the candidate key, then $$R \in 2NF$$。要求数据库表中的每一列都和主键直接相关，而不能只与主键的某一部分相关
 
 **例子：**
 
