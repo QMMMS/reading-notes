@@ -361,15 +361,3 @@ In order to improve the system performance
 
 should be stored separately. Where the data includes relation, index, cluster, log and backup. Try to find a balance between Access Efficiency and Maintenance Cost.  
 
-### MySQL索引类型
-
-- 聚簇索引：将数据存储与索引放到了一块，找到索引也就找到了数据，不需要根据主键或行号去进行回表查询。
-- 非聚簇索引：就是指B+Tree的叶子节点上的data，并不是数据本身，而是数据存放的地址。
-- **主键索引：** 在MySQL的主键上创建的索引就是主键索引，主键索引会自动创建，一个表只能有一个主键索引，同时主键索引也是唯一索引。
-- **辅助索引：** 在聚簇索引之上创建的索引称之为辅助索引，辅助索引访问数据总是需要二次查找，非聚簇索引都是辅助索引，像复合索引、前缀索引、唯一索引
-- 唯一索引 (UNIQUE Indexs) 要求索引列的所有值都只能出现一次，即必须唯一。 
-- 普通索引 (Normal index) 仅用来提高查询速度，没有其他特性。 
-- 全文索引 （FULLTEXT Indexes） MySQL可以通过建立全文索引，利用查询关键字和查询列内容之间的相关度进行检索，可以利用全文索引来提高匹配的速度。比如实现全匹配模糊查询。 但是实际场景测试mysql的全文索引性能非常不稳定，不建议生产环境使用。需要使用全文检索的地方，还是推荐使用Elasticsearch 
-- 空间索引 （Spatial indexes） 空间索引使用R树，R树是用于索引多维数据的专用数据结构。
-- **B+Tree索引**
-- **HASH索引**
