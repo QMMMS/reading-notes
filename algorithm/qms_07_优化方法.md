@@ -393,4 +393,10 @@ $$
 
 给你一个只包含 `'('` 和 `')'` 的字符串，找出最长有效（格式正确且连续）括号子串的长度。例如s = ")()())"的最长有效括号子串是 "()()"
 
-思路：贪心，两次遍历
+[思路](https://leetcode.cn/problems/longest-valid-parentheses/solutions/314683/zui-chang-you-xiao-gua-hao-by-leetcode-solution/?envType=study-plan-v2&envId=top-100-liked)：贪心，两次遍历
+
+------
+
+一个数组由两段有序序列拼接得来，在 O(log n) 时间内找到目标 target 返回下标
+
+[思路](https://leetcode.cn/problems/search-in-rotated-sorted-array/description/?envType=study-plan-v2&envId=top-100-liked)：两次二分，第一次找到两段有序序列的分界点（l=1）

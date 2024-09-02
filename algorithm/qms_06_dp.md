@@ -244,3 +244,16 @@ $$
 
 ------
 
+给你一个字符串 s，找到 s 中最长的 回文子串 。
+
+[思路](https://leetcode.cn/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-100-liked)：$$dp_{(i,j)}$$ 表示字串（i，j）是否是回文，请自己设计状态转移方程和初始化方式
+
+------
+
+给你两个单词 `word1` 和 `word2`， *请返回将 `word1` 转换成 `word2` 所使用的最少操作数* 。你可以对一个单词进行如下三种操作：插入一个字符、删除一个字符、替换一个字符
+
+[思路](https://leetcode.cn/problems/edit-distance/solutions/188223/bian-ji-ju-chi-by-leetcode-solution/?envType=study-plan-v2&envId=top-100-liked)：对于两个字符串，看似一共有六种操作，但是去除等价的操作之后，本质不同的操作实际上只有三种：在单词 `A` 中插入一个字符；在单词 `B` 中插入一个字符；修改单词 `A` 的一个字符。
+
+- 若 A 和 B 的最后一个字母相同：`D[i][j]=min(D[i][j−1]+1,D[i−1][j]+1,D[i−1][j−1])=1+min(D[i][j−1],D[i−1][j],D[i−1][j−1]−1)`
+- 若 A 和 B 的最后一个字母不同：`D[i][j]=1+min(D[i][j−1],D[i−1][j],D[i−1][j−1])`
+- 对于边界情况，一个空串和一个非空串的编辑距离为 `D[i][0] = i` 和 `D[0][j] = j`
