@@ -11,7 +11,7 @@
 - llm：《大规模语言模型从理论到实践》*张奇 等*
 - mathematics：《考研数学复习全书基础篇》*李永乐 等*；[线性代数的本质](https://www.bilibili.com/video/BV1ib411t7YR/)
 - operating_system：《操作系统概念》*Abraham Silberschatz 等*
-- statistical_learning：《统计学习导论——基于R应用》*Gareth James 等*
+- statistical_learning：[github](https://github.com/asadoughi/stat-learning)与《统计学习导论——基于R应用》*Gareth James 等*
 - dev_tools：开发/构建工具
 - software_engineering：《软件工程》 *朴勇 等* 
   - software_testing：软件测试
