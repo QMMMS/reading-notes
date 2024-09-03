@@ -214,6 +214,16 @@ Redis 支持简单的事务，可以将多个命令打包，然后一次性的�
 
 ## 实例：在爬虫框架中的应用
 
-Scrapy 是一个通用的爬虫框架，但是不支持分布式，Scrapy-redis是为了更方便地实现Scrapy分布式爬取，而提供了一些以redis为基础的组件。
+从功能上来讲，爬虫一般分为数据采集，处理，储存三个部分。传统爬虫从一个或若干初始网页的URL开始，获得初始网页上的URL，在抓取网页的过程中，不断从当前页面上抽取新的URL放入队列,直到满足系统的一定停止条件。
 
-Scrapy-Redis 是 Scrapy 框架的一个扩展，专为分布式爬虫设计。它使用 Redis 作为消息队列，实现爬虫的分布式部署和任务调度。以下是 Scrapy-Redis 的分布式结构原理的详细解析。
+Scrapy 是一个通用的爬虫框架，但是不支持分布式。Scrapy-Redis改变了scrapy的队列调度，将起始的网址从start_urls里分离出来，改为从redis读取，多个客户端可以同时读取同一个redis，从而实现了分布式的爬虫。
+
+![](./img/scrred.png)
+
+在Scrapy的队列的实现中，多个spider不能共享待爬取队列。scrapy-redis 的解决是把这个Scrapy queue换成redis数据库（也是指redis队列），从同一个redis-server存放要爬取的request，便能让多个spider去同一个数据库里读取。具体实现上重写了scheduler和spider类，实现了调度、spider启动和redis的交互
+
+Scrapy中用集合实现request去重功能，在scrapy-redis中去重是由Duplication Filter组件来实现的，它通过redis的set不重复的特性，巧妙的实现了DuplicationFilter去重。
+
+总体过程是，每当一个spider产出一个request的时候，scrapy引擎会把这个reuqest递交给这个spider对应的scheduler对象进行调度，scheduler对象通过访问redis对request进行判重，如果不重复就把他添加进redis中的调度器队列里。当调度条件满足时，scheduler对象就从redis的调度器队列中取出一个request发送给spider，让他爬取；
+
+当spider爬取的所有暂时可用url之后，scheduler发现这个spider对应的redis的调度器队列空了，于是触发信号spider_idle，spider收到这个信号之后，直接连接redis读取strart_url池，拿去新的一批url入口，然后再次重复上边的工作。
