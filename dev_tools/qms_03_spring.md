@@ -1,4 +1,4 @@
-# Spring 基本原理
+# Spring
 
 Spring 是一款主流的 Java EE 轻量级开源框架 。
 
