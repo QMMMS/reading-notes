@@ -450,6 +450,12 @@ cout << s.substr(3, 5) << endl;  // dlrow，从第三个char开始后的5个char
 
 ------
 
+给定一个区间的集合 `intervals` ，其中 `intervals[i] = [starti, endi]` 。返回 *需要移除区间的最小数量，使剩余区间互不重叠* 。
+
+[思路](https://leetcode.cn/problems/non-overlapping-intervals/description/?envType=study-plan-v2&envId=leetcode-75)：按照区间的右端点排序，贪心
+
+------
+
 给定一个整数数组 `nums`，将数组中的元素向右轮转 `k` 个位置，其中 `k` 是非负数。
 
 思路：当我们将数组的元素向右移动 *k* 次后，尾部 *k*mod*n* 个元素会移动至数组头部，其余元素向后移动 *k*mod*n* 个位置。
@@ -483,3 +489,9 @@ cout << s.substr(3, 5) << endl;  // dlrow，从第三个char开始后的5个char
 - 哈希表即为普通的哈希映射（HashMap），通过缓存数据的键映射到其在双向链表节点。
 
 核心是在访问后将节点移到链表头（即删除该节点+在头部新增节点）
+
+------
+
+给定一个整数数组 `temperatures` ，表示每天的温度，返回一个数组 `answer` ，其中 `answer[i]` 是指对于第 `i` 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 `0` 来代替。
+
+[思路](https://leetcode.cn/problems/daily-temperatures/description/?envType=study-plan-v2&envId=leetcode-75)：单调栈
