@@ -247,6 +247,7 @@ select ename , job from emp where job = 'salesman';
 - 四舍五入：`round(字段名, 小数位)`
 - 生成随机数：`rand()`
 - 处理 NULL：`ifnull(字段名, 被当做的值)`
+- 条件表达式：`if(条件，为真的值，为假的值)`
 - `ABS()`: 返回一个数的绝对值。
 - `CEILING()`: 返回大于或等于给定数值的最小整数。
 - `FLOOR()`: 返回小于或等于给定数值的最大整数。
@@ -348,9 +349,11 @@ select deptno, count(distinct job) from emp group by deptno;
 **分组函数（多行处理函数）：**
 
 - 最大最小：`max(字段名)`和`min(字段名)`
-- 求和：`sum(字段名)`
+- 求和：`sum(字段名)`，可以加入判断例如 `sum(a.id<10)`
 - 平均：`avg(字段名)`
-- 数量：`count(字段名)`
+- 数量：`count(字段名)` 计算不为 null 的数量，`count(*)` 包括 null 的数量
+
+> 对于判断，例如 `a.id<10`，返回的是0或1，对于 count，因为不为 null 都计数，所以`count(a.id<10)`没有意义，无论0或者1都计数，对于sum函数可以累加返回1的个数
 
 **关键字补充**
 
