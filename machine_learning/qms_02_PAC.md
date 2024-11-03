@@ -66,7 +66,7 @@ $$
 
 现在我们泛化模型损失loss：
 
-给定任意集合 $$ \mathcal{H} $$和某个域 $$Z$$，令损失函数 $$\ell$$ 为从 $$\mathcal{H} \times Z$$ 到非负实数集的任意函数（$$\ell : \mathcal{H} \times Z \to \mathbb{R}_{+}$$ ）注意，对于预测问题，我们有 $$Z=\mathcal{X} \times \mathcal{Y}$$。然而，我们对损失函数的概念超出了预测任务的范围，因此允许 $$\mathcal{X} \times \mathcal{Y}$$ 是任何示例域
+给定任意集合 $$ \mathcal{H} $$ 和某个域 $$Z$$，令损失函数 $$\ell$$ 为从 $$\mathcal{H} \times Z$$ 到非负实数集的任意函数（$$\ell : \mathcal{H} \times Z \to \mathbb{R}_{+}$$ ）注意，对于预测问题，我们有 $$Z=\mathcal{X} \times \mathcal{Y}$$。然而，我们对损失函数的概念超出了预测任务的范围，因此允许 $$\mathcal{X} \times \mathcal{Y}$$ 是任何示例域
 
 我们现在定义风险函数（risk function）为一个分类器 $$ h \in \mathcal{H}$$  在概率分布$$ \mathcal{D} $$ 下的期望损失：
 $$
@@ -90,9 +90,18 @@ $$
 > \ell_{\text{sq}}(h, (x, y)) \overset{\text{def}}{=} (h(x) - y)^2
 > $$
 
-## 带泛化损失的不可知 PAC 可学习性
+## 一般损失的不可知 PAC 可学习性
 
-现在我们将上面两个章节结合起来，得出 Agnostic PAC Learnability for General Loss Functions 定义：
+现在我们将上面两个章节结合起来，得出一个假设类 $$ \mathcal{H} $$ 在一般损失函数 $$\ell : \mathcal{H} \times Z \to \mathbb{R}_{+}$$ 下是 Agnostic PAC Learnable的定义：
 
+存在一个函数 $$m_{\mathcal{H}} : (0, 1)^2 \to \mathbb{N}$$，和一个具有以下性质的学习算法：对于每个 $$\epsilon, \delta \in (0, 1)$$ 和在 $$Z$$ 上的分布 $$ \mathcal{D} $$，当在由 $$ \mathcal{D} $$ 生成的至少 $$m \geq m_{\mathcal{H}}(\epsilon, \delta)$$ 个独立同分布样本上运行学习算法时，算法返回$$h \in \mathcal{H}$$，使得以至少 $$1 - \delta$$的概率，满足
+$$
+L_{\mathcal{D}}(h) \leq \min_{h' \in \mathcal{H}} L_{\mathcal{D}}(h') + \epsilon
+$$
+其中，$L_{\mathcal{D}}(h) = \mathbb{E}_{Z \sim \mathcal{D}}[\ell(h, z)]$
 
-
+> 可测性(Measurability)的说明：在上述定义中，对于每个 $$h \in \mathcal{H}$$ ，我们将函数  $$\ell(h, \cdot) : Z \to \mathbb{R}_+$$ 视为随机变量，并定义$$L_D(h)$$ 为该随机变量的期望值。为此，我们需要要求函数 $$\ell(h, \cdot)$$ 是可测的。
+>
+> 形式上，我们假设存在一个 $$Z$$ 的子集的 $$\sigma$$-代数，该代数上定义了概率 $$\mathcal{D}$$，并且 $$\mathbb{R}_+$$ 中每个初始区间的原像(preimage)都在这个 $$\sigma$$-代数中。
+>
+> 在使用 0-1 损失的二分类情况下，$$\sigma$$-代数是关于 $$\mathcal{X} \times \{0, 1\}$$ 的，并且我们关于 $$\ell$$ 的假设等价于假设对于每个 $$h$$，集合 $$\{(x, h(x)) : x \in \mathcal{X}\}$$ 在这个 $$\sigma$$-代数中。
