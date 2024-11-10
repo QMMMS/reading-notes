@@ -23,7 +23,7 @@ $$
 
 ## 去除可实现性假设
 
-现在我们尝试泛化 PAC。之前，我们要求学习算法满足可实现性假设，对于一对数据分布 $$ \mathcal{D}$$  和标记函数 f 能够成功工作。现在，我们将放弃这一可实现性假设，即不可知（agnostic） PAC 模型。
+现在我们尝试泛化 PAC。之前，我们要求学习算法满足可实现性假设，对于一对数据分布 $$ \mathcal{D}$$  和标记函数 f 能够成功工作。现在，我们将放弃这一可实现性假设，允许函数存在误差，即不可知（agnostic） PAC 模型。
 
 > 回忆一下，可实现性假设要求存在一个 $$h^* \in \mathcal{H}$$，使得 $$\mathbb{P}_{x \sim \mathcal{D}}[h^*(x) = f(x)] = 1$$
 
@@ -98,7 +98,7 @@ $$
 $$
 L_{\mathcal{D}}(h) \leq \min_{h' \in \mathcal{H}} L_{\mathcal{D}}(h') + \epsilon
 $$
-其中，$L_{\mathcal{D}}(h) = \mathbb{E}_{Z \sim \mathcal{D}}[\ell(h, z)]$
+其中，$$L_{\mathcal{D}}(h) = \mathbb{E}_{Z \sim \mathcal{D}}[\ell(h, z)]$$
 
 > 可测性(Measurability)的说明：在上述定义中，对于每个 $$h \in \mathcal{H}$$ ，我们将函数  $$\ell(h, \cdot) : Z \to \mathbb{R}_+$$ 视为随机变量，并定义$$L_D(h)$$ 为该随机变量的期望值。为此，我们需要要求函数 $$\ell(h, \cdot)$$ 是可测的。
 >

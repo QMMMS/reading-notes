@@ -28,6 +28,8 @@ $$
 
 其他别名：empirical error 、empirical risk 
 
+> empirical 这个名字是怎么来的？我的理解是，因为训练集只是分布中的一小部分，我们学到的是**经验**，而不是**真理**。empirical error 也是只是真实 risk 的一种**估计**而已
+
 我们的目标是尽量减少这个损失，即**经验风险最小化ERM**（Empirical Risk Minimization）
 
 ## 使用归纳偏好
