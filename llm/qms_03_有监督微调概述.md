@@ -2,7 +2,69 @@
 
 有监督微调（Supervised Finetuning, **SFT**）又称指令微调（Instruction Tuning），是指在已经训练好的语言模型的基础上，通过使用有标注的特定任务数据进行进一步的微调，从而使得模型具备 遵循指令的能力。
 
-经过海量数据预训练后的语言模型虽然具备了大量的“知识”，但是由于其训练时的目标仅是进行下一个词的预测，此时的模型还不能够理解并遵循人类自然语言形式的指令。 为了能够使得模型具有理解并响应人类指令的能力，还需要使用指令数据对其进行微调。
+经过海量数据预训练后的语言模型虽然具备了大量的“知识”，但是由于其训练时的目标仅是进行下一个词的预测，此时的模型还不能够理解并遵循人类自然语言形式的指令。 
+
+> 例如，当你问 “中国的首都在哪里”，它可能接着问 “美国的首都在哪里”，而非直接给出答案。
+
+为了能够使得模型具有理解并响应人类指令的能力，还需要使用指令数据对其进行微调。
+
+对于神经网络的训练，关键在于网络结构、损失函数和训练数据质量。微调和预训练在网络结构上基本一致，损失函数也大致相同，最大的区别在于训练数据。
+
+开源大模型通常会提供预训练版本和指令微调版本，厂商在进行指令微调时会使用特定格式的对话模板（Chat Template）。若要增强大模型在特定业务领域的能力，继续进行指令微调时，必须与原厂的对话模板保持一致，这样才能达到最佳的微调效果。
+
+## 对话模板（Chat Template）
+
+在指令微调过程中，会添加特殊的 token，让大模型明确这是在回答问题，并在回答结束时加上结束 token。如下， Llama 3.1 的 Chat Template，会在开始处添加序列开始符的 token，将不同角色信息放入对应的 ID 中，每个内容结束时添加序列结束符的 token
+
+训练数据：
+
+```text
+[{"role": "system", "content": "You are a helpful assistant."},
+{"role": "user", "content": "天空为什么是蓝色的？"},
+{"role": "assistant", "content": "这是由于光的散射引起的。"}]
+
+<|begin_of_text|>
+<|start_header_id|>system<|end_header_id|> You are a helpful assistant.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> 天空为什么是蓝色的？ <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|> 这是由于光的散射引起的。<|eot_id|>
+```
+
+Hugging Face 接受的对话数据结构是一个列表，列表中的每个元素是一个字典，包含 “role” 和 “content” 两项内容。“role” 通常有 “system”（用于对大模型进行系统设定）、“user”（表示用户输入）和 “assistant”（表示大模型的回答）。每个大模型都有与之唯一对应的 tokenizer 和 Chat Template，这些信息通常存储在 tokenizer 的配置文件中。
+
+> 训练的其他内容与预训练一样，例如，label 即 input_id 的 clone()
+
+训练后的大模型，只要提供问题，并在生成聊天模板时设置，它就会生成特定的 token，引导大模型生成答案，最终输出答案和序列终止符。
+
+推理：
+
+```text
+input:
+[{"role": "system", "content": "You are a helpful assistant."},
+{"role": "user", "content": "天空为什么是蓝色的？"}]
+
+input with template:
+<|begin_of_text|>
+<|start_header_id|>system<|end_header_id|> You are a helpful assistant.<|eot_id|>
+<|start_header_id|>user<|end_header_id|> 天空为什么是蓝色的？ <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>
+
+output of llm:
+这是由于光的散射引起的。<|eot_id|>
+```
+
+## 只针对回答的微调（Completions Only）
+
+在简单的指令微调训练中，输入给大模型的是整个对话，模型会对整个对话文本进行学习，并为每个输出的 token 计算损失。然而，系统提示部分在每个样本中都是相同的，重复计算其损失没有必要。为了让大模型将注意力集中在回答问题上，我们可以只对整个序列中的**答案部分**计算损失，这就是 Completions Only 方法。
+
+具体实现方式是生成一个损失掩码（Loss Mask），用于标记哪些生成的 token 需要计算损失，哪些不需要。需要计算损失的 token 标记为 1，不需要的标记为 0。在计算损失时，将每个位置的损失乘以对应的 Loss Mask，从而忽略不需要计算损失的 token。
+
+![](./img/jdwt1.png)
+
+以 Llama 3.1 为例，根据开始回答部分前面的特殊 token 序列（如`start_head_id`、`Assistant`、`end_head_id`和两个换行符）来确定需要计算损失的 token 起始位置，该位置之后的 token 的 Loss Mask 为 1，之前的为 0。最后计算每个 token 的损失，乘以对应的 Loss Mask，再取均值作为最终损失。
+
+> 在计算机视觉领域，数据增强是提高模型泛化性和精度的重要手段，通过对图片进行旋转、反转、调整亮度等操作生成更多样本。在指令微调中，数据往往需要人工手动构造，采集成本高，对于大模型庞大的参数量而言，数据量显得不足。NeFTune 的思想就是对文本进行数据增强。
+>
+> token 进入大模型的第一步是进行嵌入（Embedding）操作。在 token Embedding 构成的向量空间中，语义相近的词（如 “漂亮” 和 “美丽”、“妻子” 和 “夫人”）距离相近。NeF Tune 通过给每个 token 的 Embedding 随机添加噪声，使原本句子中的 token 可能变成与之相近的 token，从而增加样本的丰富度，提高模型的精度和泛化性。
 
 ## 提示学习
 
