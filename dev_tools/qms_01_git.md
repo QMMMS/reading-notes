@@ -233,3 +233,69 @@ def load_reference(name_or_id):
 - 提交问题必须为同一类别
 - 提交问题不要超过3个
 - 提交的commit发现不符合规范，`git commit --amend -m "新的提交信息"`或 `git reset --hard HEAD` 重新提交一次
+
+## LFS大文件存储
+
+在开发比较轻量化的代码时，开发的速度不会受到git上传下载速度的影响，但是随着系统的复杂度增加，代码中关联到的文件越来越多，其中二进制文件发生变化时，git需要存储每次提交的变动，导致本地git仓库越来越大，上传下载速度也受到了很大影响。
+
+Git LFS的出现解决了这一问题，LFS全称Large File Storge，即大文件存储，可以帮助我们管理比较大的文件，其核心是把需要进行版本控制，但是占用很大空间的文件独立于git仓库进行管理，进而加快git速度。
+
+对于二进制文件来说，git lfs对于需要追踪的文件只会保存一个指向该文件的指针，而不是在本地仓库中保存每次提交的版本，这节省了本地磁盘空间，同时也缩小的git的传输时间。当真正需要到这些大文件的时候, 才会从本地或者远端的lfs缓存中下载这些大文件。git lfs拥有本地lfs缓存和远端的lfs存储仓库。
+
+![](D:\Data\git\reading-notes\码云 Git与团队合作\img\lfs.png)
+
+- 当你add一个文件时, git lfs用一个指针替换了其中的内容, 并将文件存储在本地的git lfs缓存中。
+- 当你push一个文件时, 除过普通的文件会被正常push, 这些lfs文件也会被从本地lfs缓存传输到远端lfs存储仓库。
+- 当你checkout一个包含lfs 指针的提交的时候, 那么指针文件就将被本地lfs缓存中的备份, 或者lfs存储库中的备份替换
+
+常用命令：
+
+- 第一次下载文件：`git lfs clone`
+- 已经下载了的拉文件本身：`git lfs pull`
+- 显示当前被 lfs 追踪的文件列表：`git lfs ls-files`
+- 查看现有的文件追踪模式：`git lfs track`
+- 取消 git lfs 对某文件的追踪：`git lfs untrack "\*xx.a" `
+
+> 注意：在写下笔记的时候（24.01.28），gitee 只有付费企业用户才能使用 lfs 功能
+
+## 分支操作
+
+### 创建分支
+
+1.   `git branch -a`命令查看所有的分支，包括远程分支和本地隐藏分支
+2.   `git branch [分支名]`：创建新分支。
+3.   `git branch`：查看现在在哪个分支中。
+4.   `git checkout [分支名]`：切换分支（注意，在创建新分支后，默认还在原来的分支中，需要手动切换到新分支。如果想要用一条命令创建并且切换，使用命令`git checkout -b [分支名]`
+5.   正常进行`git add`与`git commit`命令，注意新分支都是本地操作，远程仓库上没有这个分支，在分支图上也不会显示。如果不需要在远程仓库上也创建新分支，请跳过第五步。
+6.   如果要在远程仓库上也创建新分支，第一次`git push`需要修改为`git push --set-upstream origin [分支名]`
+
+>   **origin**是什么？在git中，origin的意思是指“远程仓库”，就是远程仓库链接的别名，它是在clone一个远程仓库时，git默认创建的指向这个远程代码库的标签。
+
+### 从远程拉取分支
+
+例如要拉取 `remotes/origin/feature_agent_new_20250124` 分支：
+
+```
+PS D:\Data\git\g> git branch -a
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/dev
+  remotes/origin/feature_agent_new_20250124
+```
+
+```bash
+git checkout -b feature_agent_new_20250124 origin/feature_agent_new_20250124
+```
+
+1. 创建一个名为 feature_agent_new_20250124 的本地分支
+2. 自动切换到这个新分支
+3. 该本地分支会自动跟踪远程的 origin/feature_agent_new_20250124 分支
+
+### 合并分支
+
+1.   切换回主分支：`git checkout master`
+2.   合并分支：`git merge [刚刚创建的新分支名]`
+3.   第二种合并分支的方法是 `git rebase [分支名]`。与marge功能类似，而Rebase 的优势就是可以创造更线性的提交历史，如果只允许使用 Rebase 的话，代码库的提交历史将会变得异常清晰。移动以后会使得两个分支的功能看起来像是按顺序开发，但实际上它们是并行开发的。
+
+>   学习git（特别是分支）的互动网站：https://learngitbranching.js.org/
+
