@@ -1,6 +1,4 @@
-# 其他方法
-
-## Entropy Minimization
+# Entropy Minimization
 
 由于半监督学习的样本过少，所以一种比较好的思路就是将网络在上一次产生的，自信程度比较高的预测（我们就当他是预测对了的）加入到本次的训练中。因此，在训练的时候我们需要让网络的预测更加自信，而不是比较犹豫，即熵最小化 Entropy Minimization
 
