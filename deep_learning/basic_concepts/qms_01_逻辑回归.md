@@ -197,19 +197,34 @@ loss的大小完全取决于分类为正确标签那一类的概率，当所有�
 
 ## Softmax
 
-假如上面log loss中的 $$f(x_{ij})$$ 的表现形式是 softmax 概率的形式，那么交叉熵loss就是我们熟知的softmax with cross-entropy loss，简称softmax loss，所以说softmax loss只是交叉熵的一个特例。
+softmax可以看作将MLP输出的数值（在代码中常被称为logits），转换为归一化的分类概率，更加直观，并且从概率上可以解释。
 $$
-f(z_k)=\frac{e^{z_k}}{\sum_j e^{z_j}}
+q_i = \frac{\exp(z_i)}{\sum_{j = 1}^{K} \exp(z_j)}
 $$
 
 > 注意从技术上说“softmax损失（softmax loss）”是没有意义的，因为softmax只是一个压缩数值的函数。但是在这个说法常常被用来做简称。
 
-softmax可以看作将MLP输出的数值（在代码中常被称为logits），转换为归一化的分类概率，更加直观，并且从概率上可以解释。
-
-![](D:\Data\git\HUB\reading-notes\deep_learning\img\softmax.png)
+![](./img/softmax.png)
 
 “softmax”这个名字是怎么回事？此操作的“硬”版本称为 argmax，只需找到 最大值，将其设置为 1.0，并将 0.0 分配给所有其他值。相比之下，softmax 操作是它的“软”版本。由于 softmax 中涉及的幂，因此 强调最大值并将其推向 1.0，同时仍保持概率分布 在所有输入值上。这允许更细致入微的表示，不仅捕获最 可能的选择，以及其他选择的相对可能性。
 
+在得到概率后，然后计算交叉熵损失函数：
+$$
+\begin{align*}
+\text{Loss}&=-\sum_{i = 1}^{K} p_i \log q_i\\
+p_i&=\begin{cases}
+1, & \text{if } (i = y)\\
+0, & \text{if } (i \neq y)
+\end{cases}
+\end{align*}
+$$
+训练神经网络时，最小化预测概率和标签真实概率之间的交叉熵，从而得到最优的预测概率分布。最优的预测概率分布是：
+$$
+Z_i=\begin{cases}
++\infty, & \text{if }(i = y)\\
+0, & \text{if }(i\neq y)
+\end{cases}
+$$
 
 
 
