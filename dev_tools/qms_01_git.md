@@ -1,5 +1,7 @@
 # Git
 
+> 学习git（特别是分支）的互动网站：https://learngitbranching.js.org/
+
 ## 版本控制系统
 
 它是软件项目开发过程中用于储存我们所写的代码所有修订版本的软件。对软件开发进程中文件或目录的发展过程提供有效的追踪手段，保证在需要时可回到旧版本，避免文件丢失、修改的丢失和相互覆盖。
@@ -297,5 +299,22 @@ git checkout -b feature_agent_new_20250124 origin/feature_agent_new_20250124
 2.   合并分支：`git merge [刚刚创建的新分支名]`
 3.   第二种合并分支的方法是 `git rebase [分支名]`。与marge功能类似，而Rebase 的优势就是可以创造更线性的提交历史，如果只允许使用 Rebase 的话，代码库的提交历史将会变得异常清晰。移动以后会使得两个分支的功能看起来像是按顺序开发，但实际上它们是并行开发的。
 
->   学习git（特别是分支）的互动网站：https://learngitbranching.js.org/
+换句话说，以下两种命令等价
 
+```bash
+git fetch;git merge origin/main;git push
+git pull;git push
+```
+
+![](./img/gmerge.png)
+
+以下两种命令等价
+
+```bash
+git fetch;git rebase origin/main;git push
+git pull --rebase;git push
+```
+
+![](./img/grebase.png)
+
+> rebase的时候最好是执行：`git stash; git pull --rebase origin master; git stash pop` 先把本地变更保存一下再pull

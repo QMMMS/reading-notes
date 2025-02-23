@@ -79,6 +79,8 @@ void baseTrans(int N, int k) {
 
 [思路](https://leetcode.cn/problems/largest-rectangle-in-histogram/description/?envType=study-plan-v2&envId=top-100-liked)是，遍历每一个柱子，假设以它作为矩形的高，再找到**左右两侧最近的高度小于 h 的柱子**，就能找到以这个主子作为高的最大的矩形。怎么找左右两侧最近的高度小于 h 的柱子？从左从右分别遍历一遍维护单调栈来找。
 
+> 例如，对于 [6,7,5,2,4,5,9,3]，如何求出每一根柱子左侧且最近的小于其高度的柱子的索引？目标为得出数组：[−1,0,−1,−1,3,4,5,3]
+
 ## 字符串
 
 ## KMP匹配
@@ -434,7 +436,7 @@ cout << s.substr(3, 5) << endl;  // dlrow，从第三个char开始后的5个char
 
 给你一个整数数组 `nums` ，判断是否存在三元组 `[nums[i], nums[j], nums[k]]` 满足 `i != j`、`i != k` 且 `j != k` ，同时还满足 `nums[i] + nums[j] + nums[k] == 0` 。请你返回所有和为 `0` 且不重复的三元组。
 
-思路：排序，遍历第一个元素，然后双指针，一个从前向后，一个从后向前，时间复杂度 $$O(N^2)$$
+[思路](https://leetcode.cn/problems/3sum/description/)：排序，遍历第一个元素，然后双指针，一个从前向后，一个从后向前，时间复杂度 $$O(N^2)$$
 
 ------
 
