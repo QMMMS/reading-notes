@@ -416,3 +416,14 @@ GitHub 可以通过在仓库中配置 action，在 push 或者 PR 时自动进�
 每次 push 或者 PR 都自动检查 python 代码，可以作为通过 PR 的条件之一，如果不通过，检查 action log 就可以得知在哪行违反了哪些规则
 
 同时，可以在 VS Code 或者 PyCharm 中安装 pylint 插件，先自己检查下
+
+## 其他常用命令
+
+单仓库改信息（全局改为 global）：
+
+```bash
+git config --local user.name "新用户名"
+git config --local user.email "新邮箱地址"
+git config --list
+```
+

@@ -45,14 +45,27 @@
 
 **导出数据（退出MySQL到命令行）：**
 
-```
+```bash
 mysqldump [数据库名] > [路径] -uroot -p[密码];
 ```
 
 **例子：**
 
+```bash
+mysqldump bj > ~/Desktop/bj.sql -uroot -p[密码]
 ```
- mysqldump bj > ~/Desktop/bj.sql -uroot -p[密码]
+
+```bash
+mysqldump --single-transaction -u［用户名］ -p［密码］［数据库名］ >［导出文件名］.sql
+```
+
+--single-transaction选项： 该选项适用于 InnoDB 引擎的表，可以在导出时启动一个事务，从而避免锁表。使用该选项，mysqldump 会在导出过程中保持数据的一致性，而不需要锁定表，这样其他进程仍然可以对数据库进行读写操作
+
+在目标服务器上，使用 mysql 客户端来导入数据库。首先需要创建数据库（如果它还不存在），然后导入
+
+```bash
+mysql -u username -p -e "CREATE DATABASE IF NOT EXISTS database_name"
+mysql -u username -p database_name < database_dump.sql
 ```
 
 ## Select

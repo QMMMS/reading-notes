@@ -152,6 +152,14 @@ show_channel_urls: true
 
 在使用conda环境时，通常情况下，使用pip安装的包会安装在当前活动的conda环境中，而不会影响其他环境。每个conda环境都有自己独立的包安装路径和环境变量，因此在一个环境中安装的包不会对其他环境产生影响。
 
+## ssh
+
+```bash
+ssh-keygen -t rsa -f ~/.ssh/yourname.id_rsa
+vi ~/.ssh/config
+cat /home/work/.ssh/yourname.id_rsa.pub
+```
+
 ## 服务器信息
 
 - 版本：cat /etc/issue 
