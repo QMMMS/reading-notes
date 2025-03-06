@@ -427,3 +427,26 @@ git config --local user.email "新邮箱地址"
 git config --list
 ```
 
+ssh
+
+如果不需要自定义 ssh key 的文件名
+
+```bash
+cd ~/.ssh
+ssh-keygen -t rsa -C "your@mail.com"
+cat id_rsa.pub
+# 前往 https://github.com/settings/keys 添加 ssh key
+ssh -T git@github.com # 检查连接
+```
+
+如果需要自定义 ssh key 的文件名
+
+```bash
+ssh-keygen -t rsa -C "your@mail.com" -f ~/.ssh/xxx.id_rsa
+eval "$(ssh-agent -s)" # 启动 SSH Agent
+ssh-add ~/.ssh/xxx.id_rsa # 将生成的密钥添加到 SSH Agent
+cat ~/.ssh/xxx.id_rsa.pub
+# 前往 https://github.com/settings/keys 添加 ssh key
+ssh -i ~/.ssh/xxx.id_rsa -T git@github.com # 检查连接
+```
+
