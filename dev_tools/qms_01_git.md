@@ -450,3 +450,13 @@ cat ~/.ssh/xxx.id_rsa.pub
 ssh -i ~/.ssh/xxx.id_rsa -T git@github.com # 检查连接
 ```
 
+在`~/.ssh/config`中需要明确为GitHub配置密钥文件路径（尤其是自定义了密钥名称时）
+
+```
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/qinmaosheng.id_rsa  # 替换为你的私钥路径
+    IdentitiesOnly yes  # 强制仅使用指定密钥
+```
+
