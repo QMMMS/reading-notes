@@ -8,11 +8,17 @@
 
 - 版本：`pyenv --version`
 
+- 当前安装的所有版本：`pyenv versions`
+
 - 支持的 Python 版本列表：`pyenv install -l`
 
 - 要筛选列表：`pyenv install -l | findstr 3.8`
 
 - 安装支持的版本：`pyenv install <version>`
+
+- 删除版本：`pyenv uninstall <version>`
+
+- 删除版本：`pyenv uninstall <version> `
 
 - 设置为全局版本：`pyenv global <version>`
 
