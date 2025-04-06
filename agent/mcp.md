@@ -3,6 +3,7 @@
 > - [一文读懂：模型上下文协议（MCP）](https://mp.weixin.qq.com/s/baBtZGVpMHNU7yoAwYbutg)
 > - [AI助手要觉醒？揭秘RAG、Agent、MCP三大超能力如何让它无所不能！](https://mp.weixin.qq.com/s/-TnA9A2TgUUcG7hYWqbBnQ)
 > - [万字长文，带你0到1理解Anthropic MCP](https://mp.weixin.qq.com/s/UyMH7gh-BC9ZJp9Z5kq8Uw)
+> - [MCP不是 API](https://mp.weixin.qq.com/s/axNzt0jTd2xQKmCu6R444w)
 
 当代 AI 的重要组成
 
