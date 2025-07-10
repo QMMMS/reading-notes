@@ -107,6 +107,20 @@ nohup ./script.sh &
 - 查看上一个命令的进程号：`echo $!`
 - 查看后台运行程序：`ps aux`
 
+## Screen
+
+与nohup类似，可以长时间运行程序，但是提供了更多的灵活度。例如，可以随时返回与程序交互
+
+**创建新会话**：`screen -S <session_name>`
+
+**分离当前会话**：`Ctrl+A` 然后 `D`
+
+**列出所有会话**：`screen -ls`
+
+**恢复会话**：`screen -r <session_name or PID>`
+
+**彻底终止会话**：重连进去，`Ctrl+C`停掉程序，然后输入`exit`
+
 ## Anaconda 
 
 Anaconda 是一个用于科学计算的 Python 发行版，支持 Linux, Mac, Windows, 包含了众多流行的科学计算、数据分析的 Python 包。
