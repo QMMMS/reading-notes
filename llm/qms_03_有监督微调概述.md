@@ -60,7 +60,7 @@ output of llm:
 
 ![](./img/jdwt1.png)
 
-以 Llama 3.1 为例，根据开始回答部分前面的特殊 token 序列（如`start_head_id`、`Assistant`、`end_head_id`和两个换行符）来确定需要计算损失的 token 起始位置，该位置之后的 token 的 Loss Mask 为 1，之前的为 0。最后计算每个 token 的损失，乘以对应的 Loss Mask，再取均值作为最终损失。
+以 Llama 3.1 为例，根据开始回答部分前面的特殊 token 序列（如`start_head_id`、`Assistant`、`end_head_id`和两个换行符）来确定需要计算损失的 token 起始位置，该位置之后的 token 的 Loss Mask 为 1，之前的为 0。最后计算每个 token 的损失（对于一个位置，模型给出由logits给出的所有词的概率分布，然后通过 label 标准答案计算交叉熵损失），乘以对应的 Loss Mask，再取均值作为最终损失。
 
 > 在计算机视觉领域，数据增强是提高模型泛化性和精度的重要手段，通过对图片进行旋转、反转、调整亮度等操作生成更多样本。在指令微调中，数据往往需要人工手动构造，采集成本高，对于大模型庞大的参数量而言，数据量显得不足。NeFTune 的思想就是对文本进行数据增强。
 >

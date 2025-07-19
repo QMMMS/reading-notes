@@ -262,3 +262,192 @@ $$
 $$
 p=2\sum^{n}_{i=B} \binom{n}{i} 0.5^i(1-0.5)^{n-i}
 $$
+
+## 常见 Benchmark
+
+### MMLU
+
+题目类型：单选题。 衡量指标：Exact Match 准确率。
+
+MMLU 的全称为 Measuring Massive Multitask Language Understanding。是一份覆盖面很广的测试集，包含了 57 个学科总计 15908 道选择题。其中 1540 条用来选择大模型的最佳参数。
+
+在 2020 年发布的时候，是一份非常有挑战性的测试集，人类的专家在 MMLU 上获得了 89.8% 的准确率，GPT 3 获得了 43.9% 的准确率。但是随着大模型的发展，这份数据集已经被击穿了，头部的大模型都达到甚至超过了人类的表现。新模型发布的时候，在测评的环节都会礼貌性的提一下 MMLU，实际参考意义已经不大了。
+
+```json
+{
+  "question": "Let x = 1. What is x << 3 in Python 3?",
+  "subject": "high_school_computer_science",
+  "choices": [1, 3, 8, 16],
+  "answer": 2
+}
+```
+
+### MMLU-Pro
+
+题目类型：单选题。 衡量指标：Exact Match 准确率。
+
+MMLU Pro 是 MMLU 的加强版，共有 12,032 个题目。主要有三点改进：
+
+1. 选择题的选项从 4 个增加到了 10 个，降低蒙对了的概率。
+2. MMLU 的题目以知识性为主，记住就行，不太需要推理。MMLU Pro 则增加了题目的难度，并且引入了一些需要推理的题目。
+3. 特意增加了一些干扰答案，需要缜密的推理才能和正确的答案区分出来。这么做提高了模型分数的稳定性，因为更难做对了。
+
+```json
+{
+    "question_id": 10232,
+    "question": "An eastbound car travels a distance of 40 m in 5 s. Determine the speed of the car.",
+    "options": [
+        "12 m/s",
+        "11 m/s",
+        "10 m/s",
+        "16 m/s",
+        "6 m/s",
+        "9 m/s",
+        "7.5 m/s",
+        "8 m/s",
+        "5 m/s",
+        "14 m/s"
+    ],
+    "answer": "H",
+    "answer_index": 7,
+    "src": "stemez-Physics",
+    "category": "physics",
+    "cot_content": ""
+}
+```
+
+### MMLU-redux
+
+题目类型：单选题。 衡量指标：Exact Match 准确率。
+
+MMLU-redux 是 MMLU 的一个精修版。研究发现，原始的 MMLU benchmark 预估有 6.49% 的数据存在错误。在某些类别上更是错的离谱，比如病毒学的子分类中错误率高达 57%.
+
+所以人工校验了 MMLU 的一部分数据，涉及 30 个类别和 5700 条样本。一个例子如下
+
+```json
+{
+    "question": "If we express $3x^2 + x - 4$ in the form $a(x - h)^2 + k$, then what is $k$?",
+    "choices": "['-\frac{7}{12}', '-7', '49', '-\frac{49}{12}']",
+    "answer": 3,
+    "error_type": "ok",
+    "source": null,
+    "correct_answer": null,
+    "potential_reason": null
+}
+```
+
+### BBH
+
+题目类型：单选题、QA 衡量指标：Exact Match 准确率。
+
+BBH 的全称叫 BIG-Bench Hard, 是 BIG-Bench 的一个子集。BIG-Bench 的全称叫 Beyond the Imitation Game benchmark。这里的 Imitation Game 是指图灵测试。
+
+BIG-Bench 包含了 200 多个不同的任务，任务覆盖范围很广，包含了传统的 NLP 任务、逻辑、数学、代码、对世界的理解、对人类的理解、对技术的理解等等。
+
+BBH 则挑选了 BIG-Bench 里面最难的 27 个任务。不止是有单选题，还有一些 QA 的问题，比如完成括号的匹配和算数题等。下面三个分别是 dyck languages、multi step arithmetic two、 movie recommendation 的例子。
+
+```json
+{
+  "input": "Complete the rest of the sequence, making sure that the parentheses are closed properly. Input: [ [",
+"target": "] ]"
+},
+{
+"input": "((-1 + 2 + 9 * 5) - (-2 + -4 + -4 * -7)) =",
+"target": "24"
+},
+{
+"input": "Find a movie similar to Batman, The Mask, The Fugitive, Pretty Woman:\nOptions:\n(A) The Front Page\n(B) Maelstrom\n(C)The Lion King\n(D) Lamerica",
+"target": "(C)"
+},
+```
+
+### HellaSwag
+
+题目类型：单选题。 衡量指标：Exact Match 准确率。
+
+是一个用于测试常识性自然语言推理 (commonsense NLI) 的数据集，主要探索模型常识推理方面的表现，需要模型推理出，最有可能的下一句是什么。发布与 2019 年，属于比较老的数据集合了。
+
+```json
+{
+  "ind": 4,
+"activity_label": "Removing ice from car",
+"ctx_a": "Then, the man writes over the snow covering the window of a car, and a woman wearing winter clothes smiles.",
+"ctx_b": "then",
+"ctx": "Then, the man writes over the snow covering the window of a car, and a woman wearing winter clothes smiles. then",
+"split": "train",
+"split_type": "indomain",
+"label": 3,
+"endings": [
+    ", the man adds wax to the windshield and cuts it.",
+    ", a person board a ski lift, while two men supporting the head of the person wearing winter clothes snow as the we girls sled.",
+    ", the man puts on a christmas coat, knitted with netting.",
+    ", the man continues removing the snow on his car."
+  ],
+"source_id": "activitynet~v_-1IBHYS3L-Y"
+}
+```
+
+对于这个例子来说，一个男士在车上的雪里写字，一个女人穿了件冬季外套笑了，接下来除雪的动作是和当前场景最匹配的。
+
+### **ARC**
+
+题目类型：单选题。 衡量指标：Exact Match 准确率。
+
+全称为 AI2 Reasoning Challenge，是一个 3 年级到 9 年级科学考试的选择题问答数据集。分为 Easy 和 Challenge 两部分。Challage 包含一些需要推理的难题。
+
+一个 Easy 和 Challenge 的例子如下：
+
+```json
+{
+  "id": "Mercury_417466",
+"question": {
+    "stem": "Which statement best explains why photosynthesis is the foundation of most food webs?",
+    "choices": [
+      {
+        "text": "Sunlight is the source of energy for nearly all ecosystems.",
+        "label": "A"
+      },
+      {
+        "text": "Most ecosystems are found on land instead of in water.",
+        "label": "B"
+      },
+      {
+        "text": "Carbon dioxide is more available than other gases.",
+        "label": "C"
+      },
+      {
+        "text": "The producers in all ecosystems are plants.",
+        "label": "D"
+      }
+    ]
+  },
+"answerKey": "A"
+}
+{
+"id": "Mercury_7175875",
+"question": {
+    "stem": "An astronomer observes that a planet rotates faster after a meteorite impact. Which is the most likely effect of this increase in rotation?",
+    "choices": [
+      {
+        "text": "Planetary density will decrease.",
+        "label": "A"
+      },
+      {
+        "text": "Planetary years will become longer.",
+        "label": "B"
+      },
+      {
+        "text": "Planetary days will become shorter.",
+        "label": "C"
+      },
+      {
+        "text": "Planetary gravity will become stronger.",
+        "label": "D"
+      }
+    ]
+  },
+"answerKey": "C"
+}
+```
+
+Easy 的例子讲的是光合作用，Challenge 的例子是行星旋转速度变快了会发生什么。
