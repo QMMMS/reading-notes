@@ -80,6 +80,8 @@ value 可以看作，如果 query 和 key 相似度高，那么这个形容词�
 
 ![](./img/sa.png)
 
+![](./img/att7.png)
+
 按照这样的思路，我们可以把图像描述模型中的注意力换成 [Transformer](https://qmmms.github.io/posts/Attention-Is-All-You-Need/) block，这样的另一个好处是：它不再是一个序列模型，转而一次计算完成。
 
 ![](./img/trim.png)
@@ -90,11 +92,17 @@ value 可以看作，如果 query 和 key 相似度高，那么这个形容词�
 
 ## 公式
 
+公式和对应图示如下，图示中 softmax 为按行计算
+
+![](./img/attc.png)
 $$
 Attention(Q,K,V) = Softmax(\frac{QK^T}{\sqrt{d_k}}) \times V
 $$
 
-$$d_k$$ 是向量的长度。为什么要除以$\sqrt{d_k}$？是为了防止softmax函数的梯度消失。 可以证明$$QK^T$$的方差为$$d_k$$ ，因此$$d_k$$ 比较大时 （2 个向量的长度比较长的时候），点积方差大，即相对的差距会变大，导致最大值 softmax会更加靠近于1，剩下那些值就会更加靠近于0（退化为argmax）。算梯度的时候，梯度比较小。在 trasformer 里面一般用的 $d_k$ 比较大 (本文 512) ，除以$\sqrt{d_k}$是不错的选择。
+$$d_k$$ 是向量的长度。为什么要除以$\sqrt{d_k}$？
+
+1. 是为了防止softmax函数的梯度消失。 可以证明$$QK^T$$的方差为$$d_k$$ ，因此$$d_k$$ 比较大时 （2 个向量的长度比较长的时候），点积方差大，即相对的差距会变大，导致最大值 softmax会更加靠近于1，剩下那些值就会更加靠近于0（退化为argmax）。算梯度的时候，梯度比较小。在 trasformer 里面一般用的 $d_k$ 比较大 (本文 512) ，除以$\sqrt{d_k}$是不错的选择。
+2. 原始的 Q 和 K 均值都为0，方差都为1，而 $$QK^T$$ 的方差为$$d_k$$，为了保持方差仍为1，则手动除以了 $$\sqrt{d_k}$$
 
 类似思想，在 Transformer 的大模型应用中有温度 T 这个参数，体现在 softmax 的公式中：
 $$
