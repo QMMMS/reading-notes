@@ -219,7 +219,7 @@ DeepSeek也做了消融实验，发现去掉 batch 的辅助负载均衡损失�
 
 ![](./img/mtp1.png)
 
-> 例如，输入是 t1，原始的输出头预测 t2，下一个MTP头需要预测 t3，再下一个MTP头则需要预测 t4。
+> 例如，输入是 t1，原始的输出头预测 t2，下一个MTP头需要预测 t3，再下一个MTP头则需要预测 t4。原始结构有个问题，比如对于第4个 token 的预测，它要在不知道它前面三个token的前提下预测出下一个token，这样难度就非常大。
 
 在计算loss时，会分别考虑 t2、t3、t4 的交叉熵损失，其中 t2 的损失权重会大一些，t3 和t4 的损失权重会小一些，这样做是有一定道理的，那就是我们人在说一句话时，大脑并不是一个字一个字生成序列，很有可能一下子就思考出一个片段。
 
@@ -241,4 +241,49 @@ MTP 预测加速是在生成单个序列时有效，就是整个集群只为你�
 
 所以 DeepSeek MTP 只是在训练时利用 MTP 来提升模型的性能，在推理部署时一般就丢弃掉其他几个预测多步的头，就只用第一个头来做下一个 token 的预测，和普通单头的大模型没有区别。
 
-DeepSeek MTP 在模型架构上也进行了修改。原来的多头的预测有个问题就是法尔多部的口感不知道它前面的几个token，从而让预测正确率变低，不利于模型的修理。比如对于第四个的预测。他要在不知道他前面三个token的前提下预测出下一个token这样难度就非常大。就是给每个图传入了额外的信息，帮助多投给预测的头，能更好的预测出自己接下来的token。
+DeepSeek MTP 在模型架构上也进行了修改。原来的多 token 的预测有个问题，就是跨多步的 token 不知道它前面的几个token，从而预测正确率变低，不利于模型的收敛。比如对于第四个 token 的预测，它要在不知道它前面三个token的前提下预测出下一个token，这样难度就非常大。于是考虑给每个头传入了额外的信息，帮助多 token 预测的头更好预测出自己接下来的token。
+
+![](./img/mtp4.png)
+
+1. 对于原始模型架构，输入为 t1，基于经过 L 层的transformer block，输出经过分类头，预测出 t2
+2. 然后我们增加一个MTP头
+   1. 它的输入来源有两个：（1）来自第 L 层的token的特征，注意不是 L-1 层。 （2）t2 token经过embedding后的特征。这样的输入信息更全面，可以输出 t3 了
+   2. 然后分别做归一化，然后按token把特征拼接起来，每个 token 的特征维度就变成了原来的二倍。 这需要再经过一个线性层映射为原来的维度。
+   3. 经过一个transformer block，接下来经过分类头来预测 t3。
+3. 之后的 MTP 头同理，这样实现了将模型在L个块中推理过程转化为模型在1个块中的推理过程，从而实现加速
+
+![](./img/mtp5.png)
+
+论文里的图如上，因为训练时所有的token都是已知的，可以通过 mask 机制一次进行多个 token 训练。
+
+1. 对于主模型，输入为 t1到t4，输出是 t2 到 t5
+2. 对于第一个 MTP 头，传入的是可以预测出 t2 到 t5 的token特征，同时 t2 到 t5 的embedding也被传入第一个MTP头，最终第一个MTV头预测出 t3 到 t6
+3. 第二个 MTP 头也是类似
+
+对于两个 MTP 头，它们的交叉熵loss会加入到模型的最终的loss里面。比如在 DeepSeek  V3 里面，对所有的 MTP 头的loss取平均，然后乘以权重 $$\lambda$$ ，前10T token 为0.3，后 4.8T token 为 0.1
+$$
+\mathcal{L}_{\mathrm{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} \mathcal{L}_{\mathrm{MTP}}^{k}
+$$
+消融实验中，在添加mtp训练后，各个参数量的模型性能都有显著提高。
+
+## GRPO
+
+[复习一下](https://qmmms.gitbook.io/note/deep_learning/basic_concepts/qms15-qiang-hua-xue-xi#ding-yi-xun-lian-mu-biao) 策略梯度算法 和 GAE广义优势估计，我们有公式：
+$$
+A_{\theta}^{GAE}(s_{t},a)=(1 - \lambda)(A_{\theta}^{1}+\lambda * A_{\theta}^{2}+\lambda^{2}A_{\theta}^{3}+\cdots)=\sum_{b = 0}^{\infty}(\gamma\lambda)^{b}\delta_{t + b}^{V}
+$$
+
+$$
+\nabla \mathbb{E}(R(\tau)_{\tau \sim P_{\theta}(\tau)})\approx \frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}} A_{\theta}^{GAE}(s_{n}^{t},a_{n}^{t})\nabla\log P_{\theta}(a_{n}^{t}|s_{n}^{t})
+$$
+
+这些努力，总结一下，就是让对某个状态下做出当时动作的概率的指导信号越来越精确化。现在我们回到大模型生成场景下的强化学习，我们看一下 GAE 优势函数的计算。
+
+比如用户问了一个问题：“什么是数据库？”那么形成了两个回答，并且我们用训练好的reward模型给这两个回答不同的打分。[复习一下](https://qmmms.gitbook.io/note/llm/qms04-qiang-hua-xue-xi)，reward模型只能对整个回答给出一个得分，而大模型是逐个生成token的，它以当前已经生成的序列作为当前状态，生成下一个token作为action，reward模型不能为每个action，也就是每个token给出reward值，它们只能把回答作为一个整体给出一个打分。但是在训练状态价值网络时，需要每一步的reward，这该怎么办呢？
+
+之前讲过，reward 的模型给出的得分只放在最后一个token里，其他token的得分都为零，然后，但是基础上加上当前训练模型和参考模型之间的KL散度乘以一个负值，这样我们就得到每个token对应的reward值了。
+
+![](./img/grpo1.png)
+
+很明显只有最后一个token的reward值是有意义的，其他token的reward值只是用来限制新的模型不能和原来的模型差别太大的 KL 散度。这些用 KL 散度生成的reward值是有一些作用，但是作用有限。reward值最好是能直接评价这个动作对整个轨迹带来的是正面影响还是负面影响。
+

@@ -137,7 +137,7 @@ $$
 
 \end{align}
 $$
-得到策略梯度（Policy Gradient）算法，其表达式直观意义为：若轨迹 $$\tau$$ 回报大于零，增大该轨迹中所有状态下采取当前动作的概率；若小于零，则减小概率。
+其中，有 $$N$$ 个轨迹，第 n 个轨迹有 $$T_n$$ 个step，第 n 个轨迹得到的回报为 $$R(\tau^{n})$$，在第 n 个轨迹，第 t 个状态 s 下，当前策略执行 a 的概率为 $$P_{\theta}(a_{n}^{t}|s_{n}^{t})$$ 。得到策略梯度（Policy Gradient）算法，其表达式直观意义为：若轨迹 $$\tau$$ 回报大于零，增大该轨迹中所有状态下采取当前动作的概率；若小于零，则减小概率。
 
 训练策略网络时：
 
@@ -267,9 +267,9 @@ $$
 
 为给 Loss 函数增加 “训练策略和参考策略分布不能相差太大” 的约束，可引入 KL 散度约束。KL 散度是描述两个概率分布相似程度的量化指标，两个概率密度分布完全一致时，KL 散度为零，分布差异越大，KL 散度值越大
 $$
-Loss_{ppo}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})}+\beta KL(P_{\theta},P_{\theta'})\\
+Loss_{ppo}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})}+\beta KL(P_{\theta},P_{\theta'})\\
 $$
 此外，PPO 算法还有一种实现方式，即通过截断函数替代 KL 散度，以防止训练策略和参考策略偏差过大。
 $$
-Loss_{ppo2}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}\min\left(A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})},\mathrm{clip}\left(\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})},1 - \varepsilon,1 + \varepsilon\right)A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\right)
+Loss_{ppo2}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}\min\left(A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})},\mathrm{clip}\left(\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})},1 - \varepsilon,1 + \varepsilon\right)A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\right)
 $$
