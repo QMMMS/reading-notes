@@ -285,5 +285,58 @@ $$
 
 ![](./img/grpo1.png)
 
-很明显只有最后一个token的reward值是有意义的，其他token的reward值只是用来限制新的模型不能和原来的模型差别太大的 KL 散度。这些用 KL 散度生成的reward值是有一些作用，但是作用有限。reward值最好是能直接评价这个动作对整个轨迹带来的是正面影响还是负面影响。
+很明显只有最后一个token的reward值是有意义的，其他token的reward值只是用来限制新的模型不能和原来的模型差别太大的 KL 散度。这些用 KL 散度生成的reward值是有一些作用，但是作用有限。reward值最好是能直接评价这个动作对整个轨迹带来的是正面影响还是负面影响。这里用 KL 散度实在有些牵强
 
+我们再来回顾一下PPO算法里面是怎么计算每个token的 GAE 优势值的：
+
+1. 为每个token生成reward值
+2. 用这些reward值训练状态价值网络
+3. 利用每个token的reward值和状态价值，共同计算GAE的值
+
+不论是这个状态价值网络的训练还是计算GAE的优势值，其基础监督信号都来自每个token的reward。还有我们之前说过，我们给每个token的reward并不准确，所以这里的状态价值网络和GAE的优势值计算并不是最优的。
+
+> 注意，这里并不是说PPO算法不好，只是不适合 LLM 生成的场景。因为我们只能给最终输出给出一个奖励值，而无法对每一步，也就是每一个token，给出具有参考价值的奖励值。导致 PPO 在训练 LLM 不是最优的
+
+GRPO是怎么解决这个问题的呢？思想是：既然reward是针对整个回答，无法给出每个token具有意义的reward，那就把一个回答序列看成一个整体。令prompt 是当前的状态，那一个回答序列就是一个action。LLM 回答问题的场景下，整个trajectory就只有一个状态和一个action，状态就是 prompt 序列，action就是输出序列
+
+一个prompt下我们生成多个回答，就相当于在一个的状态下采取了不同的action。那根据优势函数的思想，怎么体现不同回答，也就是不同action，的优势呢？
+
+![](./img/grpo2.png)
+
+首先针对同一个 prompt 通过采样生成多个不同的回答，然后调用reward模型或者基于规则的reward的函数，只要能给出一个reward值，表示这个回答的好坏就可以。优势就是每个回答得到reward值减去所有回答得到的reward的均值。同时为了在不同的prompt和回答之间的数据的一致性，再除以这一组回答reward值的标准差。
+
+因为我们把整个回答所有的token都看成一个整体，就把这个优势值复制分配给每个token。这就是GRPO（group related policy optimization）群体相对策略优化。相比PPO，GRPO 不用训练状态价值函数就可以直接得到优势值，简化了训练过程，并且这里的优势值在 LLM 场景下更有意义。
+
+回忆一下 PPO 的损失函数
+$$
+Loss_{ppo}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}A_{\theta'}^{GAE}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})}+\beta KL(P_{\theta},P_{\theta'})\\
+$$
+直接换成 GRPO 的优势函数
+$$
+Loss_{ppo}=-\frac{1}{N}\sum_{n = 1}^{N}\sum_{t = 1}^{T_{n}}A_{\theta'}^{GRPO}(s_{n}^{t},a_{n}^{t})\frac{P_{\theta}(a_{n}^{t}|s_{n}^{t})}{P_{\theta'}(a_{n}^{t}|s_{n}^{t})}+\beta KL(P_{\theta},P_{\theta'})\\
+$$
+当然也可以考虑加上截断函数，以防止训练策略和参考策略偏差过大。
+
+我们看一下论文里的公式，注意这里是优化目标函数（要尽量大），注意符号，此外，加上了截断函数，其余和我们的公式都是一样的
+$$
+J_{\text{GRPO}}(\theta) = \mathbb{E}\left[q \sim P({Q}), \left\{o_{i}\right\}_{i=1}^{G} \sim \pi_{\theta_{\text{old}}}(O \mid q)\right] 
+\frac{1}{G}\sum_{i=1}^{G}\frac{1}{|o_{i}|}\sum_{t=1}^{|o_{i}|}
+\left\{
+\min\left[
+\frac{\pi_{\theta}\left(o_{i,t} \mid q,o_{i,<t}\right)}{\pi_{\theta_{\text{old}}}\left(o_{i,t} \mid q,o_{i,<t}\right)}A_{i,t}^{\text{GRPO}},
+\operatorname{clip}\left(
+\frac{\pi_{\theta}\left(o_{i,t} \mid q,o_{i,<t}\right)}{\pi_{\theta_{\text{old}}}\left(o_{i,t} \mid q,o_{i,<t}\right)},
+1-\varepsilon, 1+\varepsilon
+\right)A_{i,t}^{\text{GRPO}}
+\right]
+- \beta \text{KL}\left[\pi_{\theta} \mid \pi_{ref}\right]
+\right\}
+$$
+
+- $$Q$$ 表示问题集合，从中采集问题 $$q$$
+- 老的策略网络基于 $$q$$ 生成一组 output $$\left\{o_{i}\right\}_{i=1}^{G}\sim \pi_{\theta_{\text{old}}}(O \mid q)$$，包含 $$G$$ 个
+- $$|o_{i}|$$ 表示每个输出序列的长度
+- $$\pi_{\theta}$$ 表示当前的训练网络，$$\pi_{\theta}\left(o_{i,t} \mid q,o_{i,<t}\right)$$ 表示根据 $$t$$ 之前的 token 预测出 $$t$$ 位置 token 的概率
+- $$A_{i,t}^{\text{GRPO}}$$ 为第 i 个输出序列，第 t 个token的 GRPO优势值
+- 后面是阶段函数和 KL 散度
+- 这里不仅对序列数量，也对 token 长度求了平均

@@ -147,6 +147,7 @@ Anaconda 安装包下载地址：https://www.anaconda.com/download。[Linux安�
 - 要退出当前环境：`conda deactivate`
 - 查看所有环境：`conda env list`
 - 复制环境：`conda create --name myclone --clone myenv`
+- 指定位置创建环境：`conda create -p /dev/conda_envs/new_env python=3.12`
 - 删除环境：`conda env remove --name myenv`
 
 > 在较新版本的Conda中，`source activate`和`conda activate`两者实际上是等效的，都用于激活环境。`source activate`是在较早的Conda版本中使用的语法，而`conda activate`是在更新的版本中引入的新语法，目的是更加简洁和一致。因此，在使用最新版本的Conda时，建议使用`conda activate`命令。
