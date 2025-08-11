@@ -264,8 +264,11 @@ get_peft_model 函数包裹了基础模型并得到一个 PeftModel 类的模型
 
 Transformer在做attention的时候，output 是 value 的 加权和（权重是 query 和 key 之间的距离，和 序列信息 无关）。attention 不会有时序信息。 因此，根本不看 key - value 对在序列哪些地方。一句话把顺序任意打乱之后，attention 出来，结果都是一样的。顺序会变，但是值不会变，有问题！ 
 
-需要加入时序信息。 如果使用RNN，把上一时刻的输出 作为下一个时刻的输入，来传递时序信息。 attention 在输入里面加入时序信息，叫做 positional encoding。公式为：
-
+需要加入时序信息。 如果使用RNN，把上一时刻的输出 作为下一个时刻的输入，来传递时序信息。 attention 在输入里面加入时序信息，叫做 positional encoding。我们需要找到相对位置 k 的一个线性变换函数， 也就是符合这么一个特性，这个特性就让模型能够捕获相对位置关系：
+$$
+PE_{t+k}=f(PE_{t},k)
+$$
+具体而言，公式为：
 $$
 PE_{(pos,2i)} = sin(\frac{pos}{n^{2i/d_{model}}})
 $$
@@ -300,6 +303,9 @@ $$
 ![](./img/posa.png)
 
 此外，也可以[证明](https://mp.weixin.qq.com/s/lYXNXvQHWtm7faVJvUKOew)，旋转矩阵 $$R(-\theta)$$ 可以使下列式子成立，这里的旋转矩阵是高维的，两两组合在子空间中旋转
+
+> 既然是旋转，为什么是两两一组的旋转？为什么不是整个向量直接旋转？一方面是捕获更细粒度的间隔，再一个从计算效率上的考虑：两两一组可以构建一个非常稀疏的矩阵，非常容易计算，但如果不分组的话则是一个稠密矩阵。
+
 $$
 R(-\theta) PE_{pos}=PE_{pos+k}
 $$

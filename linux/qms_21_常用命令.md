@@ -111,15 +111,12 @@ nohup ./script.sh &
 
 与nohup类似，可以长时间运行程序，但是提供了更多的灵活度。例如，可以随时返回与程序交互
 
-**创建新会话**：`screen -S <session_name>`
-
-**分离当前会话**：`Ctrl+A` 然后 `D`
-
-**列出所有会话**：`screen -ls`
-
-**恢复会话**：`screen -r <session_name or PID>`
-
-**彻底终止会话**：重连进去，`Ctrl+C`停掉程序，然后输入`exit`
+- **创建新会话**：`screen -S <session_name>`
+- **分离当前会话**：`Ctrl+A` 然后 `D`
+- **列出所有会话**：`screen -ls`
+- **恢复会话**：`screen -r <session_name or PID>`
+- **强制踢掉前一个用户连接会话**：`screen -D -r <session_name or PID>`
+- **彻底终止会话**：重连进去，`Ctrl+C`停掉程序，然后输入`exit`
 
 ## Anaconda 
 
