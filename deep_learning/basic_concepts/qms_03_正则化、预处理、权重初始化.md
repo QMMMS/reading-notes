@@ -165,8 +165,6 @@ Post Norm 之所以这么设计，是把 Normalization 放在一个模块的最�
 
 ![](./img/pren.png)
 
-
-
 总结来看，Pre Norm 的训练更快，且更加稳定，所以之后的模型架构大多都是 Pre Norm 了，比如 GPT，MPT，Falcon，llama 等。
 
 ### 其他不常用但启发思考的做法

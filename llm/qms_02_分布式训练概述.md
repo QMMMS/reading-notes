@@ -62,11 +62,21 @@
 
 ![](./img/t49.png)
 
-矩阵乘（MatMul）的张量并行要充分利用矩阵了分块乘法原理。
+矩阵乘（MatMul）的张量并行要充分利用矩阵了分块乘法原理。Megatron-LM 提出了 1D Tensor Parallelism， 也就是两个矩阵之间的分布式计算方法。后面陆续又有 2D、2.5D、3D Tensor Parallelism。1D Tensor Parallelism 的算法完全来源于矩阵运算的性质。如下图所示：
+
+![](./img/tensorcal.png)
 
 ![](./img/t411.png)
 
-Transformer 中的FFN 结构与多头自注意力机制的张量并行示意如下：
+假设我们有多个矩阵进行相乘，相邻之间的矩阵可以一个横切，一个纵切，然后放到不同的 device 上。从而达到并行计算的目的。分割成多个也是类似的结论。所以对于矩阵相乘来说，如果有 N 个 GPU，完全可以将参数平分到 N 个GPU上，每个 GPU 只负责计算 1/N 的参数，而不用都塞到一个里面，显存也吃不消。
+
+![](./img/tensorcal2.png)
+
+Transformers 的 FFN 层涉及两次矩阵乘法。
+$$
+\operatorname{FFN}(X)=g\left(X\cdot W_{1}\right) W_{2}
+$$
+由于 g 是非线性的激活函数 Gelu，即 $$Gelu(X+Y) \neq Gelu(X) +Gelu(Y)$$ ，Transformer 中的FFN 结构与多头自注意力机制的张量并行示意如下：
 
 ![](./img/t413.png)
 
