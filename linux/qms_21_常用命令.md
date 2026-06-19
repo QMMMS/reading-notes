@@ -172,6 +172,18 @@ vi ~/.ssh/config
 cat /home/work/.ssh/yourname.id_rsa.pub
 ```
 
+对于 ssh 连接远程服务器，在本地电脑上产出 `id_rsa  id_rsa.pub` 文件后，将 pub 内容拷贝到服务器 `~/.ssh/authorized_keys` 下，另起一行，配置可以写
+
+```
+Host xxxxxx
+    HostName 11.111.11.11
+    Port 12345
+    User yyy
+    RemoteForward 17897 127.0.0.1:10808
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsa
+```
+
 ## 服务器信息
 
 - 版本：cat /etc/issue 
